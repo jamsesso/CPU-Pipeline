@@ -38,6 +38,8 @@ begin
 		  when "011" => alu_tmp <= num_A - num_B;
 		  when "100" => mult_result <= num_A * num_B;
 			alu_tmp <= mult_result(15 downto 0);
+		  when "101" => alu_tmp <= num_A + 1;
+		  when "110" => alu_tmp <= num_A - 1;
 		  when others =>
 	    end case; 					  
 	end process;

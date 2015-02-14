@@ -28,3 +28,4 @@ incremental_db/
 *.dat
 *.hif
 *.tdf
+*.bak
