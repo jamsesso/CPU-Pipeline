@@ -40,7 +40,16 @@ architecture fsm of controller is
 
   type state_type is (  S0,S1,S1a,S1b,S2,S3,S3a,S3b,S4,S4a,S4b,S5,S5a,S5b,
 			S6,S6a,S7,S7a,S7b,S8,S8a,S8b,S9,S9a,S9b,S10,S11,S11a, 
-			Multiply, Multiply_Save_Result, Multiply_Save_Result_B);
+			
+			-- multiplication states
+			Multiply, Multiply_Save_Result, Multiply_Save_Result_B,
+			
+			-- increment register value states
+			Request_Increment, Save_Increment_Result,
+			
+			-- decrement register value states
+			Request_Decrement, Save_Decrement_Result
+			);
   signal state: state_type;
 	
 begin
@@ -48,18 +57,17 @@ begin
     variable OPCODE: std_logic_vector(3 downto 0);
   begin
     if rst='1' then			   
-	Ms_ctrl <= "10";
-  	PCclr_ctrl <= '1';		  	-- Reset State
-	PCinc_ctrl <= '0';
-	IRld_ctrl <= '0';
-	RFs_ctrl <= "00";		
-	Rfwe_ctrl <= '0';
-	Mre_ctrl <= '0';
-	Mwe_ctrl <= '0';					
-	jmpen_ctrl <= '0';		
-	oe_ctrl <= '0';
-	state <= S0;
-
+		Ms_ctrl <= "10";
+		PCclr_ctrl <= '1';		  	-- Reset State
+		PCinc_ctrl <= '0';
+		IRld_ctrl <= '0';
+		RFs_ctrl <= "00";		
+		Rfwe_ctrl <= '0';
+		Mre_ctrl <= '0';
+		Mwe_ctrl <= '0';					
+		jmpen_ctrl <= '0';		
+		oe_ctrl <= '0';
+		state <= S0;
     elsif (clock'event and clock='1') then
 	case state is 
 	  when S0 =>	PCclr_ctrl <= '0';	-- Reset State	
@@ -96,6 +104,8 @@ begin
 			    when halt =>	state <= S10; 
 			    when readm => 	state <= S11;
 			    when mult =>	state <= Multiply;
+			    when incr =>	state <= Request_Increment;
+			    when decr =>	state <= Request_Decrement;
 			    when others => 	state <= S1;
 			    end case;
 					
@@ -189,20 +199,53 @@ begin
 	  when S11a =>  oe_ctrl <= '1'; 
 			state <= S1;
 			
-	  -- Multiplication Instruction
-	  when Multiply => RFr1a_ctrl <= IR_word(11 downto 8);	
+		-- Multiplication Instruction
+		when Multiply => 
+			RFr1a_ctrl <= IR_word(11 downto 8);	
 			RFr1e_ctrl <= '1'; -- RF[r3] <= RF[r1] * RF[r2]
 			RFr2e_ctrl <= '1'; 
 			RFr2a_ctrl <= IR_word(7 downto 4);
  			ALUs_ctrl <= "100";
 			state <= Multiply_Save_Result;
-	  when Multiply_Save_Result => RFr1e_ctrl <= '0';
+			
+		when Multiply_Save_Result => 
+			RFr1e_ctrl <= '0';
 			RFr2e_ctrl <= '0';
 			RFs_ctrl <= "00";
 			RFwa_ctrl <= IR_word(3 downto 0);
 			RFwe_ctrl <= '1';
 			state <= Multiply_Save_Result_B;
-	  when Multiply_Save_Result_B => state <= S1;
+			
+		when Multiply_Save_Result_B => 
+			state <= S1;
+	  
+		-- Increment Instruction
+		when Request_Increment =>
+			RFr1a_ctrl <= IR_word(11 downto 8); -- Get R1 from instruction.
+			RFr1e_ctrl <= '1';                  -- Enable port 1 on register file to read value.
+			ALUs_ctrl <= "101";                 -- Select "increment" option in ALU.
+			state <= Save_Increment_Result;
+	
+		when Save_Increment_Result =>
+			RFr1e_ctrl <= '0'; -- Disable reading from register file signal.
+			RFs_ctrl <= "00";  -- ??
+			RFwa_ctrl <= IR_word(11 downto 8);
+			RFwe_ctrl <= '1';
+			state <= S1;
+	  
+		-- Decrement Instruction
+		when Request_Decrement =>
+			RFr1a_ctrl <= IR_word(11 downto 8);
+			RFr1e_ctrl <= '1';
+			ALUs_ctrl <= "110";
+			state <= Save_Decrement_Result;
+			
+		when Save_Decrement_Result =>
+			RFr1e_ctrl <= '0';
+			RFs_ctrl <= "00";
+			RFwa_ctrl <= IR_word(11 downto 8);
+			RFwe_ctrl <= '1';
+			state <= S1;
 	  
 	  when others =>
 	end case;

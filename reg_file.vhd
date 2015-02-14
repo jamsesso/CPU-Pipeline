@@ -16,15 +16,15 @@ use work.MP_lib.all;
 entity reg_file is
 port ( 	clock	: 	in std_logic; 	
 	rst	: 	in std_logic;
-	RFwe	: 	in std_logic;
-	RFr1e	: 	in std_logic;
-	RFr2e	: 	in std_logic;	
-	RFwa	: 	in std_logic_vector(3 downto 0);  
-	RFr1a	: 	in std_logic_vector(3 downto 0);
-	RFr2a	: 	in std_logic_vector(3 downto 0);
-	RFw		: 	in std_logic_vector(15 downto 0);
-	RFr1	: 	out std_logic_vector(15 downto 0);
-	RFr2	:	out std_logic_vector(15 downto 0)
+	RFwe	: 	in std_logic; -- Register file write enable
+	RFr1e	: 	in std_logic; -- Register file port 1 read enable
+	RFr2e	: 	in std_logic; -- Register file port 2 read enable
+	RFwa	: 	in std_logic_vector(3 downto 0); -- Register to write to
+	RFr1a	: 	in std_logic_vector(3 downto 0); -- Register to read on port 1
+	RFr2a	: 	in std_logic_vector(3 downto 0); -- Register to read on port 2
+	RFw		: 	in std_logic_vector(15 downto 0); -- Data to write to register
+	RFr1	: 	out std_logic_vector(15 downto 0); -- Data read from register on port 1
+	RFr2	:	out std_logic_vector(15 downto 0)  -- Data read from register on port 2
 );
 end reg_file;
 
