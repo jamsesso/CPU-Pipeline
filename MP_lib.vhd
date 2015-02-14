@@ -20,6 +20,9 @@ constant jz  : std_logic_vector(3 downto 0) := "0110";
 constant halt  : std_logic_vector(3 downto 0) := "1111";
 constant readm  : std_logic_vector(3 downto 0) := "0111";
 constant mult : std_logic_vector(3 downto 0) := "1000";
+constant incr : std_logic_vector(3 downto 0) := "1001";
+constant decr : std_logic_vector(3 downto 0) := "1010";
+constant mov5 : std_logic_vector(3 downto 0) := "1011";
 
 component alu is
 port (	num_A: 	in std_logic_vector(15 downto 0);

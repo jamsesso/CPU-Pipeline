@@ -29,3 +29,8 @@ incremental_db/
 *.hif
 *.tdf
 *.bak
+*.sim.rpt
+*.tan.rpt
+*.eds_overflow
+*.simfam
+*.wsf
