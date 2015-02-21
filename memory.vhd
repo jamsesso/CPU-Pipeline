@@ -33,14 +33,13 @@ begin
 		if rst='1' then
 			-- test increments and decrement instructions
 			tmp_ram <= (
-				0 => "0011000100000001", -- R1 <- 1
-				1 => "1001000100000000", -- R1++
-				2 => "0001000100001111", -- MEM[0x0F] <- R1
-				3 => "0111000000001111", -- OUT MEM[0x0F]
-				4 => "1010000100000000", -- R1--
-				5 => "0001000100001111", -- MEM[0x0F] <- R1
-				6 => "0111000000001111", -- OUT MEM[0x0F]
-				7 => "1111000000000000", -- HALT
+				0 => "0011000100001111", -- R1 <- 0x0F       (R1 is a pointer to the address 0x0F)
+				1 => "0011001000110011", -- R2 <- 0x33       (R2 holds a test value)
+				2 => "0001001000001111", -- MEM[0x0F] <- R2  (Write R2 to memory)
+				3 => "1011000100110000", -- R3 <- MEM[R1]    (Use pointer to read value into R3)
+				4 => "0001001100010000", -- MEM[0x10] <- R3  (Save R3 into next address, 0x10)
+				5 => "0111000000010000", -- OUTPUT MEM[0x10] (should be 33)
+				6 => "1111000000000000",
 				others => "0000000000000000"
 			);
 			

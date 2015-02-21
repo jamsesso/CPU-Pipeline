@@ -25,8 +25,8 @@ begin
 	process(I0, I1, I2, Sel)
     begin
         case Sel is
-            when "00" =>	O <= I0;
-            when "01" =>    O <= I1;
+            when "00" =>	O <= I0; -- ALU
+            when "01" =>    O <= I1; -- memory
 			when "10" =>	O <= I2;
             when others =>  O <= x"FFFF";
         end case;

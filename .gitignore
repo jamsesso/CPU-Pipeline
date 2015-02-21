@@ -34,3 +34,6 @@ incremental_db/
 *.eds_overflow
 *.simfam
 *.wsf
+*.sgate.rvd
+*.sgate_sm.rvd
+*.fit.smsg
