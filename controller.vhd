@@ -51,7 +51,7 @@ architecture fsm of controller is
 			Request_Decrement, Save_Decrement_Result,
 			
 			-- indirect memory access states
-			Start_Indirect_Memory_Access, Write_Indirect_Memory_Access
+			Start_Indirect_Memory_Access, Write_Indirect_Memory_Access, Save_Indirect_Memory_Access
 			);
   signal state: state_type;
 	
@@ -109,6 +109,7 @@ begin
 			    when mult =>	state <= Multiply;
 			    when incr =>	state <= Request_Increment;
 			    when decr =>	state <= Request_Decrement;
+			    when mov5 =>    state <= Start_Indirect_Memory_Access;
 			    when others => 	state <= S1;
 			    end case;
 					
@@ -271,10 +272,13 @@ begin
 			-- mem_data is option "01" on the smallmux unit.
 			-- We want to connect the mem_data bus to the RFw bus:
 			RFs_ctrl <= "01";
+			-- Done.
+			state <= Save_Indirect_Memory_Access;
+			
+		when Save_Indirect_Memory_Access =>
 			-- Now we simply need to instruct our register file to write the value on the bus into the appropriate register:
 			RFwa_ctrl <= IR_word(7 downto 4);
 			RFwe_ctrl <= '1';
-			-- Done.
 			state <= S1;
 	  
 	  when others =>

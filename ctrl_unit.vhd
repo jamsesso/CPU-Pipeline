@@ -21,6 +21,7 @@ port(	clock_cu:	in 	std_logic;
 	dpdata_out:	in 	std_logic_vector(15 downto 0);
 	maddr_in:	out std_logic_vector(15 downto 0);		  
 	immdata:	out std_logic_vector(15 downto 0);
+	IR_debug :  out std_logic_vector(15 downto 0);
 	RFs_cu:		out	std_logic_vector(1 downto 0);
 	RFwa_cu:	out	std_logic_vector(3 downto 0);
 	RFr1a_cu:	out	std_logic_vector(3 downto 0);
@@ -48,6 +49,7 @@ begin
 
   IR2mux_b <= "000000000000" & IR_sig(11 downto 8);	
   immdata <= "00000000" & IR_sig(7 downto 0);
+  IR_debug <= IR_sig;
   
   U0: controller port map(clock_cu,rst_cu,IR_sig,RFs_cu,RFwa_cu,
 			    RFr1a_cu,RFr2a_cu,RFwe_cu,RFr1e_cu,

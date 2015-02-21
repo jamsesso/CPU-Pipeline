@@ -114,7 +114,23 @@ port ( 	clock	: 	in std_logic;
 	RFr2a	: 	in std_logic_vector(3 downto 0);
 	RFw	: 	in std_logic_vector(15 downto 0);
 	RFr1	: 	out std_logic_vector(15 downto 0);
-	RFr2	:	out std_logic_vector(15 downto 0)
+	RFr2	:	out std_logic_vector(15 downto 0);
+	Register0 : out std_logic_vector(15 downto 0);
+	Register1 : out std_logic_vector(15 downto 0);
+	Register2 : out std_logic_vector(15 downto 0);
+	Register3 : out std_logic_vector(15 downto 0);
+	Register4 : out std_logic_vector(15 downto 0);
+	Register5 : out std_logic_vector(15 downto 0);
+	Register6 : out std_logic_vector(15 downto 0);
+	Register7 : out std_logic_vector(15 downto 0);
+	Register8 : out std_logic_vector(15 downto 0);
+	Register9 : out std_logic_vector(15 downto 0);
+	RegisterA : out std_logic_vector(15 downto 0);
+	RegisterB : out std_logic_vector(15 downto 0);
+	RegisterC : out std_logic_vector(15 downto 0);
+	RegisterD : out std_logic_vector(15 downto 0);
+	RegisterE : out std_logic_vector(15 downto 0);
+	RegisterF : out std_logic_vector(15 downto 0)
 );
 end component;
 
@@ -135,6 +151,7 @@ port(	clock_cu:	in 	std_logic;
 	dpdata_out:	in 	std_logic_vector(15 downto 0);
 	maddr_in:	out 	std_logic_vector(15 downto 0);		  
 	immdata:	out 	std_logic_vector(15 downto 0);
+	IR_debug :  out std_logic_vector(15 downto 0);
 	RFs_cu:		out	std_logic_vector(1 downto 0);
 	RFwa_cu:	out	std_logic_vector(3 downto 0);
 	RFr1a_cu:	out	std_logic_vector(3 downto 0);
@@ -168,7 +185,23 @@ port(	clock_dp:	in 	std_logic;
 	ALUz_dp:	out 	std_logic;
 	RF1out_dp:	out 	std_logic_vector(15 downto 0);
 	ALUout_dp:	out 	std_logic_vector(15 downto 0);
-	bufout_dp:	out 	std_logic_vector(15 downto 0)
+	bufout_dp:	out 	std_logic_vector(15 downto 0);
+	Register0 : out std_logic_vector(15 downto 0);
+	Register1 : out std_logic_vector(15 downto 0);
+	Register2 : out std_logic_vector(15 downto 0);
+	Register3 : out std_logic_vector(15 downto 0);
+	Register4 : out std_logic_vector(15 downto 0);
+	Register5 : out std_logic_vector(15 downto 0);
+	Register6 : out std_logic_vector(15 downto 0);
+	Register7 : out std_logic_vector(15 downto 0);
+	Register8 : out std_logic_vector(15 downto 0);
+	Register9 : out std_logic_vector(15 downto 0);
+	RegisterA : out std_logic_vector(15 downto 0);
+	RegisterB : out std_logic_vector(15 downto 0);
+	RegisterC : out std_logic_vector(15 downto 0);
+	RegisterD : out std_logic_vector(15 downto 0);
+	RegisterE : out std_logic_vector(15 downto 0);
+	RegisterF : out std_logic_vector(15 downto 0)
 );
 end component;
 

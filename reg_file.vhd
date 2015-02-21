@@ -24,7 +24,23 @@ port ( 	clock	: 	in std_logic;
 	RFr2a	: 	in std_logic_vector(3 downto 0); -- Register to read on port 2
 	RFw		: 	in std_logic_vector(15 downto 0); -- Data to write to register
 	RFr1	: 	out std_logic_vector(15 downto 0); -- Data read from register on port 1
-	RFr2	:	out std_logic_vector(15 downto 0)  -- Data read from register on port 2
+	RFr2	:	out std_logic_vector(15 downto 0);  -- Data read from register on port 2
+	Register0 : out std_logic_vector(15 downto 0);
+	Register1 : out std_logic_vector(15 downto 0);
+	Register2 : out std_logic_vector(15 downto 0);
+	Register3 : out std_logic_vector(15 downto 0);
+	Register4 : out std_logic_vector(15 downto 0);
+	Register5 : out std_logic_vector(15 downto 0);
+	Register6 : out std_logic_vector(15 downto 0);
+	Register7 : out std_logic_vector(15 downto 0);
+	Register8 : out std_logic_vector(15 downto 0);
+	Register9 : out std_logic_vector(15 downto 0);
+	RegisterA : out std_logic_vector(15 downto 0);
+	RegisterB : out std_logic_vector(15 downto 0);
+	RegisterC : out std_logic_vector(15 downto 0);
+	RegisterD : out std_logic_vector(15 downto 0);
+	RegisterE : out std_logic_vector(15 downto 0);
+	RegisterF : out std_logic_vector(15 downto 0)
 );
 end reg_file;
 
@@ -35,6 +51,24 @@ architecture behv of reg_file is
   signal tmp_rf: rf_type;
 
 begin
+
+	Register0 <= tmp_rf(0);
+	Register1 <= tmp_rf(1);
+	Register2 <= tmp_rf(2);
+	Register3 <= tmp_rf(3);
+	Register4 <= tmp_rf(4);
+	Register5 <= tmp_rf(5);
+	Register6 <= tmp_rf(6);
+	Register7 <= tmp_rf(7);
+	Register8 <= tmp_rf(8);
+	Register9 <= tmp_rf(9);
+	RegisterA <= tmp_rf(10);
+	RegisterB <= tmp_rf(11);
+	RegisterC <= tmp_rf(12);
+	RegisterD <= tmp_rf(13);
+	RegisterE <= tmp_rf(14);
+	RegisterF <= tmp_rf(15);
+
   write12: process(clock, rst, RFwa, RFwe, RFw)
   begin
     if rst='1' then				-- high active

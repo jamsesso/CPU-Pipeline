@@ -36,3 +36,4 @@ incremental_db/
 *.wsf
 *.sgate.rvd
 *.sgate_sm.rvd
+*.fit.smsg
