@@ -91,11 +91,11 @@ begin
 	        IRld_ctrl <= '0';
 	        PCinc_ctrl <= '1';
 	        Mre_ctrl <= '0';
-	  		state <= S1b;			-- Fetch end ...
-	  when S1b => PCinc_ctrl <= '0';
-		   state <= S2;
+	  		state <= S2;
 	  				
-	  when S2 =>	OPCODE := IR_word(15 downto 12);
+	  when S2 =>	
+			PCinc_ctrl <= '0';
+			OPCODE := IR_word(15 downto 12);
 			  case OPCODE is
 			    when mov1 => 	state <= S3;
 			    when mov2 => 	state <= S4;
@@ -218,9 +218,6 @@ begin
 			RFs_ctrl <= "00";
 			RFwa_ctrl <= IR_word(3 downto 0);
 			RFwe_ctrl <= '1';
-			state <= Multiply_Save_Result_B;
-			
-		when Multiply_Save_Result_B => 
 			state <= S1;
 	  
 		-- Increment Instruction
