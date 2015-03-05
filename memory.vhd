@@ -16,10 +16,13 @@ entity memory is
 port ( 	clock	: 	in std_logic;
 		rst		: 	in std_logic;
 		Mre		:	in std_logic;
+		Mre2    :   in std_logic;
 		Mwe		:	in std_logic;
 		address	:	in std_logic_vector(7 downto 0);
-		data_in	:	in std_logic_vector(15 downto 0);
-		data_out:	out std_logic_vector(15 downto 0)
+		address2  :	in std_logic_vector(7 downto 0);
+		data_in	  :	in std_logic_vector(15 downto 0); -- Fetch stage never needs to write data so we don't need another datain bus.
+		data_out  :	out std_logic_vector(15 downto 0);
+		data_out2 : out std_logic_vector(15 downto 0)
 );
 end memory;
 
@@ -76,7 +79,7 @@ begin
 		end if;
 	end process;
 
-    read: process(clock, rst, Mwe, address)
+    read1: process(clock, rst, Mwe, address)
 	begin
 		if rst='1' then
 			data_out <= ZERO;
@@ -86,6 +89,16 @@ begin
 					data_out <= tmp_ram(conv_integer(address));
 				end if;
 			end if;
+		end if;
+	end process;
+	
+	-- Fetch instruction can read from memory concurrently!!!!
+	read2: process(clock, rst, Mre2, address2)
+	begin
+		if rst = '1' then
+			data_out2 <= ZERO;
+		elsif rising_edge(clock) and Mre2 = '1' then
+			data_out2 <= tmp_ram(conv_integer(address2));
 		end if;
 	end process;
 end behv;

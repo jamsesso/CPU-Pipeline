@@ -79,10 +79,13 @@ component memory is
 port ( 	clock	: 	in std_logic;
 		rst		: 	in std_logic;
 		Mre		:	in std_logic;
+		Mre2    :   in std_logic;
 		Mwe		:	in std_logic;
 		address	:	in std_logic_vector(7 downto 0);
-		data_in	:	in std_logic_vector(15 downto 0);
-		data_out:	out std_logic_vector(15 downto 0)
+		address2  :	in std_logic_vector(7 downto 0);
+		data_in	  :	in std_logic_vector(15 downto 0); -- Fetch stage never needs to write data so we don't need another datain bus.
+		data_out  :	out std_logic_vector(15 downto 0);
+		data_out2 : out std_logic_vector(15 downto 0)
 );
 end component;
 
