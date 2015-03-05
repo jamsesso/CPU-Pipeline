@@ -205,6 +205,58 @@ port(	clock_dp:	in 	std_logic;
 );
 end component;
 
+component FetchPipeline is
+	port(
+		-- Module inputs.
+		clock					: in std_logic;
+		reset					: in std_logic;
+		instruction_reg			: in std_logic_vector(15 downto 0);
+		
+		-- Module outputs.
+		reg_file_bus_select		: out std_logic_vector(1 downto 0);
+		reg_file_write			: out std_logic_vector(3 downto 0);
+		reg_file_read1			: out std_logic_vector(3 downto 0);
+		reg_file_read2			: out std_logic_vector(3 downto 0);
+		reg_file_write_en		: out std_logic; -- Active HIGH
+		reg_file_read1_en		: out std_logic; -- Active HIGH
+		reg_file_read2_en		: out std_logic; -- Active HIGH
+		pc_increment_en			: out std_logic; -- Active HIGH
+		instruction_reg_load_en	: out std_logic; -- Active HIGH
+		mem_bus_select			: out std_logic_vector(1 downto 0);
+		mem_write_en			: out std_logic; -- Active HIGH
+		mem_read_en				: out std_logic; -- Active HIGH
+		jump_en					: out std_logic; -- Active HIGH
+		output_en				: out std_logic; -- Active HIGH
+		opcode					: out std_logic_vector(3 downto 0)
+	);
+end component;
+
+component ExecutePipeline is
+	port(
+		opcode		: in std_logic_vector(3 downto 0);
+		clock		: in std_logic;
+		rst			: in std_logic;
+		IR_word		: in std_logic_vector(15 downto 0);
+		RFs_ctrl	: out std_logic_vector(1 downto 0);
+		RFwa_ctrl	: out std_logic_vector(3 downto 0);
+		RFr1a_ctrl	: out std_logic_vector(3 downto 0);
+		RFr2a_ctrl	: out std_logic_vector(3 downto 0);
+		RFwe_ctrl	: out std_logic;
+		RFr1e_ctrl	: out std_logic;
+		RFr2e_ctrl	: out std_logic;						 
+		ALUs_ctrl	: out std_logic_vector(2 downto 0);	 
+		jmpen_ctrl	: out std_logic;
+		PCinc_ctrl	: out std_logic;
+		PCclr_ctrl	: out std_logic;
+		IRld_ctrl	: out std_logic;
+		Ms_ctrl		: out std_logic_vector(1 downto 0);
+		Mre_ctrl	: out std_logic;
+		Mwe_ctrl	: out std_logic;
+		oe_ctrl		: out std_logic
+	);
+end component;
+
+
 end MP_lib;
 
 
