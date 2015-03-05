@@ -50,6 +50,12 @@ architecture structure of microprocessor is
 
 signal addr_bus,mdin_bus,mdout_bus,immd_bus,rfout_bus, IR_debug : std_logic_vector(15 downto 0);  
 signal mem_addr: std_logic_vector(7 downto 0);
+
+-- New memory signals.
+signal mem_read2 : std_logic;
+signal mem_addr2 : std_logic_vector(7 downto 0);
+signal mem_data_out2 : std_logic_vector(15 downto 0);
+
 signal RFwa_s, RFr1a_s, RFr2a_s: std_logic_vector(3 downto 0);
 signal RFwe_s, RFr1e_s, RFr2e_s: std_logic;
 signal ALUs_s: std_logic_vector(2 downto 0);
@@ -71,7 +77,7 @@ begin
 								D_Register4, D_Register5, D_Register6, D_Register7, 
 								D_Register8, D_Register9, D_RegisterA, D_RegisterB, 
 								D_RegisterC, D_RegisterD, D_RegisterE, D_RegisterF);
-	Unit2: memory port map(	cpu_clk,cpu_rst,Mre_s,Mwe_s,mem_addr,mdin_bus,mdout_bus);
+	Unit2: memory port map(	cpu_clk,cpu_rst,Mre_s, mem_read2, Mwe_s,mem_addr, mem_addr2, mdin_bus,mdout_bus, mem_data_out2);
 
 -- Debug code
 D_addr_bus <=addr_bus;
