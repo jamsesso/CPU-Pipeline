@@ -68,6 +68,7 @@ begin
 		RFs_ctrl <= "00";		
 		Rfwe_ctrl <= '0';
 		Mre_ctrl <= '0';
+		mem_read2 <= '0';
 		Mwe_ctrl <= '0';					
 		jmpen_ctrl <= '0';		
 		oe_ctrl <= '0';
@@ -79,7 +80,8 @@ begin
 
 	  when S1 =>	PCinc_ctrl <= '0';	
 			IRld_ctrl <= '1'; -- Fetch Instruction
-			Mre_ctrl <= '1';  
+			Mre_ctrl <= '1'; -- Old way to read in fetch stage.
+			mem_read2 <= '1'; -- New way to read in fetch stage.
 			RFwe_ctrl <= '0'; 
 			RFr1e_ctrl <= '0'; 
 			RFr2e_ctrl <= '0'; 
@@ -92,6 +94,7 @@ begin
 	        IRld_ctrl <= '0';
 	        PCinc_ctrl <= '1';
 	        Mre_ctrl <= '0';
+	        mem_read2 <= '0';
 	  		state <= S2;
 	  				
 	  when S2 =>	
