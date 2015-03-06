@@ -21,6 +21,7 @@ port( 	cpu_clk:	in std_logic;
 -- Debug variables
 		D_addr_bus,D_mdin_bus,D_mdout_bus,D_immd_bus, D_IR, D_rfout_bus: out std_logic_vector(15 downto 0);  
 		D_mem_addr: out std_logic_vector(7 downto 0);
+		D_mem_addr2: out std_logic_vector(7 downto 0);
 		D_RFwa_s, D_RFr1a_s, D_RFr2a_s: out std_logic_vector(3 downto 0);
 		D_RFwe_s, D_RFr1e_s, D_RFr2e_s: out std_logic;
 		D_ALUs_s: out std_logic_vector(2 downto 0);
@@ -86,6 +87,7 @@ D_mdout_bus <=mdout_bus;
 D_immd_bus <=immd_bus;
 D_rfout_bus<=rfout_bus;
 D_mem_addr<=mem_addr;
+D_mem_addr2 <= mem_addr2;
 D_RFwa_s<=RFwa_s;
 D_RFr1a_s<=RFr1a_s;
 D_RFr2a_s<=RFr2a_s;
