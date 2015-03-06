@@ -78,26 +78,39 @@ begin
 	  when S0 =>	PCclr_ctrl <= '0';	-- Reset State	
 			state <= S1;	
 
+-- START FETCH STAGE
 	  when S1 =>	PCinc_ctrl <= '0';	
-			IRld_ctrl <= '1'; -- Fetch Instruction
-			Mre_ctrl <= '1'; -- Old way to read in fetch stage.
-			mem_read2 <= '1'; -- New way to read in fetch stage.
+			-- Fetch instruction.
+			-- Tell IR to write the instruction from memory and send the read signal to memory to get the instruction.
+			IRld_ctrl <= '1';
+			--Mre_ctrl <= '1'; -- Old way to read in fetch stage.
+			mem_read2 <= '1';
+			
+			-- TODO all of this should be able to be commented out.
 			RFwe_ctrl <= '0'; 
 			RFr1e_ctrl <= '0'; 
 			RFr2e_ctrl <= '0'; 
-			Ms_ctrl <= "10";
+			--Ms_ctrl <= "10";
 			Mwe_ctrl <= '0';
 			jmpen_ctrl <= '0';
 			oe_ctrl <= '0';
+			-- END TODO
+			
 			state <= S1a;
-	  when S1a => 	
+	  when S1a =>
+			-- Done loading new instruction into IR, deassert signals.
 	        IRld_ctrl <= '0';
-	        PCinc_ctrl <= '1';
-	        Mre_ctrl <= '0';
 	        mem_read2 <= '0';
+	        
+	        -- Tell the PC to start incrementing.
+	        PCinc_ctrl <= '1';
+	        
+	        -- TODO remove the next line
+	        -- Mre_ctrl <= '0';
 	  		state <= S2;
-	  				
-	  when S2 =>	
+			
+	  when S2 =>
+			-- Tell the PC to stop incrementing.
 			PCinc_ctrl <= '0';
 			OPCODE := IR_word(15 downto 12);
 			  case OPCODE is
@@ -116,7 +129,9 @@ begin
 			    when mov5 =>    state <= Start_Indirect_Memory_Access;
 			    when others => 	state <= S1;
 			    end case;
-					
+-- END FETCH STAGE
+
+-- START EXECUTE STAGE					
 	  when S3 =>	RFwa_ctrl <= IR_word(11 downto 8);	
 			RFs_ctrl <= "01";  -- RF[rn] <= mem[direct]
 			Ms_ctrl <= "01";
@@ -281,7 +296,7 @@ begin
 			RFwa_ctrl <= IR_word(7 downto 4);
 			RFwe_ctrl <= '1';
 			state <= S1;
-	  
+-- END EXECUTE STAGE
 	  when others =>
 	end case;
     end if;
