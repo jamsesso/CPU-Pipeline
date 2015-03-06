@@ -35,7 +35,7 @@ port(	clock_cu:	in 	std_logic;
 	Mwe_cu:		out std_logic;
 	oe_cu:		out std_logic;
 	
-	mem_data2 : in std_logic_vector(15 downto 0);
+	-- New memory signals.
 	mem_read2 : out std_logic;
 	mem_addr2 : out std_logic_vector(7 downto 0)
 );
@@ -46,7 +46,8 @@ architecture struct of ctrl_unit is
 signal IR_sig: std_logic_vector(15 downto 0);
 signal PCinc_sig, PCclr_sig, IRld_sig: std_logic;
 signal Ms_sig: std_logic_vector(1 downto 0);
-signal PC2mux: std_logic_vector(15 downto 0);
+signal PC2mux: std_logic_vector(15 downto 0) := x"0000";
+signal PC2addr: std_logic_vector(15 downto 0);
 signal IR2mux_a, IR2mux_b: std_logic_vector(15 downto 0);
 
 begin
@@ -54,12 +55,14 @@ begin
   IR2mux_b <= "000000000000" & IR_sig(11 downto 8);	
   immdata <= "00000000" & IR_sig(7 downto 0);
   IR_debug <= IR_sig;
+  mem_addr2 <= PC2addr(7 downto 0);
+  PC2mux <= PC2addr;
   
   U0: controller port map(clock_cu,rst_cu,IR_sig,RFs_cu,RFwa_cu,
 			    RFr1a_cu,RFr2a_cu,RFwe_cu,RFr1e_cu,
 			    RFr2e_cu,ALUs_cu,jpen_cu,PCinc_sig,
-			    PCclr_sig,IRld_sig,Ms_sig,Mre_cu,Mwe_cu,oe_cu);
-  U1: PC port map(clock_cu,PCld_cu, PCinc_sig, PCclr_sig, IR2mux_a, PC2mux);
+			    PCclr_sig,IRld_sig,Ms_sig,Mre_cu,Mwe_cu,oe_cu, mem_read2);
+  U1: PC port map(clock_cu,PCld_cu, PCinc_sig, PCclr_sig, IR2mux_a, PC2addr); -- Wire the PC directly to the memory address bus #2.
   U2: IR port map(mdata_out, IRld_sig, IR2mux_a, IR_sig);
   U3: bigmux port map(dpdata_out,IR2mux_a,PC2mux,IR2mux_b,Ms_sig,maddr_in);
 

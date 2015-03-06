@@ -63,7 +63,8 @@ port(	clock:		in std_logic;
 	Ms_ctrl:	out std_logic_vector(1 downto 0);
 	Mre_ctrl:	out std_logic;
 	Mwe_ctrl:	out std_logic;
-	oe_ctrl:	out std_logic
+	oe_ctrl:	out std_logic;
+	mem_read2 : out std_logic
 );
 end component;
 
@@ -167,7 +168,6 @@ port(	clock_cu:	in 	std_logic;
 	Mre_cu:		out 	std_logic;
 	Mwe_cu:		out 	std_logic;
 	oe_cu:		out 	std_logic;
-	mem_data2 : in std_logic_vector(15 downto 0);
 	mem_read2 : out std_logic;
 	mem_addr2 : out std_logic_vector(7 downto 0)
 );

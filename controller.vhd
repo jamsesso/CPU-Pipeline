@@ -32,7 +32,8 @@ port(	clock:		in std_logic;
 	Ms_ctrl:	out std_logic_vector(1 downto 0);
 	Mre_ctrl:	out std_logic;
 	Mwe_ctrl:	out std_logic;
-	oe_ctrl:	out std_logic
+	oe_ctrl:	out std_logic;
+	mem_read2 : out std_logic
 );
 end controller;
 
