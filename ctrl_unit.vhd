@@ -33,7 +33,11 @@ port(	clock_cu:	in 	std_logic;
 	ALUs_cu:	out	std_logic_vector(2 downto 0);	
 	Mre_cu:		out std_logic;
 	Mwe_cu:		out std_logic;
-	oe_cu:		out std_logic
+	oe_cu:		out std_logic;
+	
+	mem_data2 : in std_logic_vector(15 downto 0);
+	mem_read2 : out std_logic;
+	mem_addr2 : out std_logic_vector(7 downto 0)
 );
 end ctrl_unit;
 
