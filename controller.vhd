@@ -40,19 +40,19 @@ end controller;
 architecture fsm of controller is
 
   type state_type is (  S0,S1,S1a,S1b,S2,S3,S3a,S3b,S4,S4a,S4b,S5,S5a,S5b,
-			S6,S6a,S7,S7a,S7b,S8,S8a,S8b,S9,S9a,S9b,S10,S11,S11a, 
+			S6,S6a,S7,S7a,S7b,S8,S8a,S8b,S9,S9a,S9b,S10,S11,S11a, S11b,
 			
 			-- multiplication states
-			Multiply, Multiply_Save_Result, Multiply_Save_Result_B,
+			Multiply, Multiply_Save_Result, Multiply_Cleanup,
 			
 			-- increment register value states
-			Request_Increment, Save_Increment_Result,
+			Request_Increment, Save_Increment_Result, Increment_Cleanup,
 			
 			-- decrement register value states
-			Request_Decrement, Save_Decrement_Result,
+			Request_Decrement, Save_Decrement_Result, Decrement_Cleanup,
 			
 			-- indirect memory access states
-			Start_Indirect_Memory_Access, Write_Indirect_Memory_Access, Save_Indirect_Memory_Access
+			Start_Indirect_Memory_Access, Write_Indirect_Memory_Access, Save_Indirect_Memory_Access, Indirect_Memory_Access_Cleanup
 			);
   signal state: state_type;
 begin
@@ -64,7 +64,7 @@ begin
 			PCinc_ctrl <= '0';
 			IRld_ctrl <= '0';
 			RFs_ctrl <= "00";		
-			Rfwe_ctrl <= '0';
+			RFwe_ctrl <= '0';
 			Mre_ctrl <= '0';
 			mem_read2 <= '0';
 			Mwe_ctrl <= '0';					
@@ -83,22 +83,12 @@ begin
 					-- Tell IR to write the instruction from memory and send the read signal to memory to get the instruction.
 					IRld_ctrl <= '1';
 					mem_read2 <= '1';
-					
-					-- TODO all of this should be able to be commented out.
-					RFwe_ctrl <= '0'; 
-					RFr1e_ctrl <= '0'; 
-					RFr2e_ctrl <= '0';
-					Mwe_ctrl <= '0';
-					jmpen_ctrl <= '0';
-					oe_ctrl <= '0';
-					-- END TODO
-					
 					state <= S1a;
+				
 				when S1a =>
 					-- Done loading new instruction into IR, deassert signals.
 					IRld_ctrl <= '0';
-					mem_read2 <= '0';
-					
+					mem_read2 <= '0';	
 					-- Tell the PC to start incrementing.
 					PCinc_ctrl <= '1';
 					state <= S2;
@@ -154,6 +144,7 @@ begin
 					state <= S4b;			-- write into memory
 				when S4b =>			  
 					Mwe_ctrl <= '0';
+					RFr1e_ctrl <= '0';
 					state <= S1;
 				
 				when S5 =>	
@@ -170,6 +161,8 @@ begin
 					state <= S5b;
 				when S5b =>
 					Mwe_ctrl <= '0';
+					RFr1e_ctrl <= '0';
+					RFr2e_ctrl <= '0';
 					state <= S1;
 							
 				when S6 =>	
@@ -178,7 +171,8 @@ begin
 					RFs_ctrl <= "10";
 					IRld_ctrl <= '0';
 					state <= S6a;
-				when S6a =>   
+				when S6a =>
+					RFwe_ctrl <= '0';
 					state <= S1;
 				
 				when S7 =>	
@@ -195,7 +189,8 @@ begin
 					RFwa_ctrl <= IR_word(3 downto 0);
 					RFwe_ctrl <= '1';
 					state <= S7b;
-				when S7b =>   
+				when S7b =>
+					RFwe_ctrl <= '0';
 					state <= S1;
 							
 				when S8 =>	
@@ -212,7 +207,8 @@ begin
 					RFwa_ctrl <= IR_word(3 downto 0);
 					RFwe_ctrl <= '1';
 					state <= S8b;
-				when S8b =>   
+				when S8b =>
+					RFwe_ctrl <= '0';
 					state <= S1;
 					
 				when S9 =>	
@@ -221,7 +217,8 @@ begin
 					RFr1e_ctrl <= '1'; -- jz if R[rn] = 0
 					ALUs_ctrl <= "000";
 					state <= S9a;
-				when S9a =>   
+				when S9a =>
+					RFr1e_ctrl <= '0';
 					state <= S9b;
 				when S9b =>   
 					jmpen_ctrl <= '0';
@@ -237,6 +234,10 @@ begin
 					state <= S11a;
 				when S11a =>  
 					oe_ctrl <= '1'; 
+					state <= S11b;
+				when S11b =>
+					oe_ctrl <= '0';
+					Mre_ctrl <= '0';
 					state <= S1;
 					
 				-- Multiplication Instruction
@@ -254,6 +255,10 @@ begin
 					RFs_ctrl <= "00";
 					RFwa_ctrl <= IR_word(3 downto 0);
 					RFwe_ctrl <= '1';
+					state <= Multiply_Cleanup;
+					
+				when Multiply_Cleanup =>
+					RFwe_ctrl <= '0';
 					state <= S1;
 			  
 				-- Increment Instruction
@@ -268,6 +273,10 @@ begin
 					RFs_ctrl <= "00";  -- Put result from the ALU onto the RF write bus.
 					RFwa_ctrl <= IR_word(11 downto 8);
 					RFwe_ctrl <= '1';
+					state <= Increment_Cleanup;
+					
+				when Increment_Cleanup =>
+					RFwe_ctrl <= '0';
 					state <= S1;
 			  
 				-- Decrement Instruction
@@ -282,6 +291,10 @@ begin
 					RFs_ctrl <= "00";
 					RFwa_ctrl <= IR_word(11 downto 8);
 					RFwe_ctrl <= '1';
+					state <= Decrement_Cleanup;
+					
+				when Decrement_Cleanup =>
+					RFwe_ctrl <= '0';
 					state <= S1;
 					
 				-- Indirect memory access
@@ -312,6 +325,11 @@ begin
 					-- Now we simply need to instruct our register file to write the value on the bus into the appropriate register:
 					RFwa_ctrl <= IR_word(7 downto 4);
 					RFwe_ctrl <= '1';
+					state <= Indirect_Memory_Access_Cleanup;
+					
+				when Indirect_Memory_Access_Cleanup =>
+					RFwe_ctrl <= '0';
+					Mre_ctrl <= '0';
 					state <= S1;
 -- END EXECUTE STAGE
 			  when others =>
