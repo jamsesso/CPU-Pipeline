@@ -15,31 +15,26 @@ use work.MP_lib.all;
 
 entity controller is
 	port(
-		-- Input signals.
-		clock 			: in std_logic;
-		rst 			: in std_logic;
-		IR_word 		: in std_logic_vector(15 downto 0);
-		
-		-- Output signals driven by the fetch stage:
-		PCinc_ctrl 		: out std_logic;
-		PCclr_ctrl 		: out std_logic;
-		IRld_ctrl 		: out std_logic;
-		mem_read2 		: out std_logic;
-		
-		-- Output signals driven by the execute stage:
-		RFs_ctrl 		: out std_logic_vector(1 downto 0);
-		RFwa_ctrl 		: out std_logic_vector(3 downto 0);
-		RFr1a_ctrl 		: out std_logic_vector(3 downto 0);
-		RFr2a_ctrl 		: out std_logic_vector(3 downto 0);
-		RFwe_ctrl 		: out std_logic;
-		RFr1e_ctrl 		: out std_logic;
-		RFr2e_ctrl 		: out std_logic;						 
-		ALUs_ctrl 		: out std_logic_vector(2 downto 0);	 
-		jmpen_ctrl 		: out std_logic;
-		Ms_ctrl 		: out std_logic_vector(1 downto 0);
-		Mre_ctrl 		: out std_logic;
-		Mwe_ctrl 		: out std_logic;
-		oe_ctrl 		: out std_logic
+		clock:		in std_logic;
+		rst:		in std_logic;
+		IR_word:	in std_logic_vector(15 downto 0);
+		RFs_ctrl:	out std_logic_vector(1 downto 0);
+		RFwa_ctrl:	out std_logic_vector(3 downto 0);
+		RFr1a_ctrl:	out std_logic_vector(3 downto 0);
+		RFr2a_ctrl:	out std_logic_vector(3 downto 0);
+		RFwe_ctrl:	out std_logic;
+		RFr1e_ctrl:	out std_logic;
+		RFr2e_ctrl:	out std_logic;						 
+		ALUs_ctrl:	out std_logic_vector(2 downto 0);	 
+		jmpen_ctrl:	out std_logic;
+		PCinc_ctrl:	out std_logic;
+		PCclr_ctrl:	out std_logic;
+		IRld_ctrl:	out std_logic;
+		Ms_ctrl:	out std_logic_vector(1 downto 0);
+		Mre_ctrl:	out std_logic;
+		Mwe_ctrl:	out std_logic;
+		oe_ctrl:	out std_logic;
+		mem_read2:	out std_logic
 	);
 end controller;
 
@@ -73,12 +68,277 @@ architecture fsm of controller is
 	);
 	
 	signal state: state_type;
-begin
 	
-
-
-
-
+	-- New stuff:
+	type FetchState is (PreFetch, Fetch, IncrementPC, Decode);
+	type ExecuteState is (First, Second, Third);
+	
+	signal fetch_state : FetchState := PreFetch;
+	signal exec_state : ExecuteState := First;
+	shared variable fetch_ready : std_logic;
+	shared variable opcode : std_logic_vector(3 downto 0);
+begin
+	-- Fetch stage.
+	FetchStage: process(clock, rst, IR_word) begin
+		if rst = '1' then
+			fetch_ready := '0';
+			fetch_state <= PreFetch;
+			mem_read2   <= '0';
+			PCclr_ctrl  <= '1';
+			PCinc_ctrl  <= '0';
+			IRld_ctrl   <= '0';
+		elsif rising_edge(clock) then
+			case fetch_state is
+				when PreFetch =>
+					PCclr_ctrl <= '0';
+					fetch_state <= Fetch;
+					
+				when Fetch =>
+					-- Fetch instruction.
+					-- Tell IR to write the instruction from memory and send the read signal to memory to get the instruction.
+					IRld_ctrl <= '1';
+					mem_read2 <= '1';
+					fetch_state <= IncrementPC;
+					
+				when IncrementPC =>
+					-- Done loading new instruction into IR, deassert signals.
+					IRld_ctrl  <= '0';
+					mem_read2  <= '0';	
+					-- Tell the PC to start incrementing.
+					PCinc_ctrl <= '1';
+					fetch_state <= Decode;
+					
+				when Decode =>
+					PCinc_ctrl  <= '0';
+					fetch_ready := '1';
+					opcode      := IR_word(15 downto 12);
+					fetch_state <= Fetch;
+			end case;
+		end if;
+	end process;
+	
+	-- Execute stage.
+	ExecuteStage: process(clock, rst, IR_word) begin
+		if rst = '1' then
+			RFs_ctrl   <= "00";
+			RFwe_ctrl  <= '0';
+			Mre_ctrl   <= '0';
+			Mwe_ctrl   <= '0';
+			jmpen_ctrl <= '0';
+			oe_ctrl    <= '0';
+		elsif rising_edge(clock) and fetch_ready = '1' then
+			case exec_state is
+				when First =>
+					case opcode is
+						when mov1 =>
+							RFwe_ctrl <= '0';
+							RFwa_ctrl <= IR_word(11 downto 8);	
+							RFs_ctrl <= "01";  -- RF[rn] <= mem[direct]
+							Ms_ctrl <= "01";
+							Mre_ctrl <= '1';
+							Mwe_ctrl <= '0';
+							
+						when mov2 =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8);	
+							RFr1e_ctrl <= '1'; -- mem[direct] <= RF[rn]			
+							Ms_ctrl <= "01";
+							ALUs_ctrl <= "000";
+							
+						when mov3 =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8);	
+							RFr1e_ctrl <= '1'; -- mem[RF[rn]] <= RF[rm]
+							Ms_ctrl <= "00";
+							ALUs_ctrl <= "001";
+							RFr2a_ctrl <= IR_word(7 downto 4); 
+							RFr2e_ctrl <= '1'; -- set addr.& data
+							
+						when mov4 =>
+							RFwa_ctrl <= IR_word(11 downto 8);	
+							RFwe_ctrl <= '1'; -- RF[rn] <= imm.
+							RFs_ctrl <= "10";
+							
+						when add =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8);	
+							RFr1e_ctrl <= '1'; -- RF[r3] <= RF[r1] + RF[r2]
+							RFr2e_ctrl <= '1'; 
+							RFr2a_ctrl <= IR_word(7 downto 4);
+							ALUs_ctrl <= "010";
+							
+						when subt =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8);	
+							RFr1e_ctrl <= '1'; -- RF[rn] <= RF[rn] - RF[rm]
+							RFr2a_ctrl <= IR_word(7 downto 4);
+							RFr2e_ctrl <= '1';  
+							ALUs_ctrl <= "011";
+							
+						when jz =>
+							RFwe_ctrl <= '0';
+							jmpen_ctrl <= '1';
+							RFr1a_ctrl <= IR_word(11 downto 8);	
+							RFr1e_ctrl <= '1'; -- jz if R[rn] = 0
+							ALUs_ctrl <= "000";
+							
+						when halt =>
+							RFwe_ctrl <= '0';
+							
+						when readm =>
+							RFwe_ctrl <= '0';
+							Ms_ctrl <= "01";
+							Mre_ctrl <= '1'; -- read memory
+							Mwe_ctrl <= '0';
+							
+						when mult =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8);	
+							RFr1e_ctrl <= '1'; -- RF[r3] <= RF[r1] * RF[r2]
+							RFr2e_ctrl <= '1'; 
+							RFr2a_ctrl <= IR_word(7 downto 4);
+							ALUs_ctrl <= "100";
+							
+						when incr =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8); -- Get R1 from instruction.
+							RFr1e_ctrl <= '1';                  -- Enable port 1 on register file to read value.
+							ALUs_ctrl <= "101";                 -- Select "increment" option in ALU.
+							
+						when decr =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8);
+							RFr1e_ctrl <= '1';
+							ALUs_ctrl <= "110";
+							
+						when mov5 =>
+							RFwe_ctrl <= '0';
+							RFr1a_ctrl <= IR_word(11 downto 8); -- Get the address stored in R1.
+							RFr1e_ctrl <= '1';	                -- Enable port 1 on register file for reading.
+							Ms_ctrl <= "00";
+							RFs_ctrl <= "01";
+						
+						when others =>
+					end case;
+					exec_state <= Second;
+					
+				when Second =>
+					case opcode is
+						when mov1 =>
+							RFwe_ctrl <= '1'; 
+							Mre_ctrl <= '0';
+							
+						when mov2 =>
+							Mre_ctrl <= '0';
+							Mwe_ctrl <= '1';
+							
+						when mov3 =>
+							Mre_ctrl <= '0';			
+							Mwe_ctrl <= '1'; -- write into memory
+							
+						when mov4 =>
+							RFwe_ctrl <= '0';
+							
+						when add =>
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(3 downto 0);
+							RFwe_ctrl <= '1';
+							
+						when subt =>
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(3 downto 0);
+							RFwe_ctrl <= '1';
+							
+						when jz =>
+							RFr1e_ctrl <= '0';
+							
+						when halt => -- Wait state.
+							
+						when readm =>
+							oe_ctrl <= '1'; 
+							
+						when mult =>
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(3 downto 0);
+							RFwe_ctrl <= '1';
+							
+						when incr =>
+							RFr1e_ctrl <= '0'; -- Disable reading from register file signal.
+							RFs_ctrl <= "00";  -- Put result from the ALU onto the RF write bus.
+							RFwa_ctrl <= IR_word(11 downto 8);
+							RFwe_ctrl <= '1';
+							
+						when decr =>
+							RFr1e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(11 downto 8);
+							RFwe_ctrl <= '1';
+							
+						when mov5 =>
+							RFr1e_ctrl <= '0';
+							Mre_ctrl <= '1';
+							RFwa_ctrl <= IR_word(7 downto 4);
+							
+						when others =>
+					end case;
+					exec_state <= Third;
+					
+				when Third =>
+					case opcode is
+						when mov1 =>
+							RFwe_ctrl <= '0';
+							
+						when mov2 =>
+							Mwe_ctrl <= '0';
+							RFr1e_ctrl <= '0';
+							
+						when mov3 =>
+							Mwe_ctrl <= '0';
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							
+						when mov4 => -- Wait state.
+							
+						when add =>
+							RFwe_ctrl <= '0';
+							
+						when subt =>
+							RFwe_ctrl <= '0';
+							
+						when jz =>
+							jmpen_ctrl <= '0';
+							
+						when halt => -- Wait state.
+							
+						when readm =>
+							oe_ctrl <= '0';
+							Mre_ctrl <= '0';
+							
+						when mult =>
+							RFwe_ctrl <= '0';
+							
+						when incr =>
+							RFwe_ctrl <= '0';
+							
+						when decr =>
+							RFwe_ctrl <= '0';
+							
+						when mov5 =>
+							RFwe_ctrl <= '1';
+							Mre_ctrl <= '0';
+						
+						when others =>
+					end case;
+					exec_state <= First;
+			end case;
+		end if;
+	end process;
 
 --	process(clock, rst, IR_word)
 --		variable OPCODE: std_logic_vector(3 downto 0);
@@ -365,4 +625,4 @@ begin
 --			end case;
 --		end if;
 --	end process;
-end fsm;
+end architecture;

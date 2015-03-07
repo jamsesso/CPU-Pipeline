@@ -45,27 +45,28 @@ port( 	Ia: 	in std_logic_vector(15 downto 0);
 end component;
 
 component controller is
-port(	clock:		in std_logic;
-	rst:		in std_logic;
-	IR_word:	in std_logic_vector(15 downto 0);
-	RFs_ctrl:	out std_logic_vector(1 downto 0);
-	RFwa_ctrl:	out std_logic_vector(3 downto 0);
-	RFr1a_ctrl:	out std_logic_vector(3 downto 0);
-	RFr2a_ctrl:	out std_logic_vector(3 downto 0);
-	RFwe_ctrl:	out std_logic;
-	RFr1e_ctrl:	out std_logic;
-	RFr2e_ctrl:	out std_logic;						 
-	ALUs_ctrl:	out std_logic_vector(2 downto 0);	 
-	jmpen_ctrl:	out std_logic;
-	PCinc_ctrl:	out std_logic;
-	PCclr_ctrl:	out std_logic;
-	IRld_ctrl:	out std_logic;
-	Ms_ctrl:	out std_logic_vector(1 downto 0);
-	Mre_ctrl:	out std_logic;
-	Mwe_ctrl:	out std_logic;
-	oe_ctrl:	out std_logic;
-	mem_read2 : out std_logic
-);
+	port(
+		clock:		in std_logic;
+		rst:		in std_logic;
+		IR_word:	in std_logic_vector(15 downto 0);
+		RFs_ctrl:	out std_logic_vector(1 downto 0);
+		RFwa_ctrl:	out std_logic_vector(3 downto 0);
+		RFr1a_ctrl:	out std_logic_vector(3 downto 0);
+		RFr2a_ctrl:	out std_logic_vector(3 downto 0);
+		RFwe_ctrl:	out std_logic;
+		RFr1e_ctrl:	out std_logic;
+		RFr2e_ctrl:	out std_logic;						 
+		ALUs_ctrl:	out std_logic_vector(2 downto 0);	 
+		jmpen_ctrl:	out std_logic;
+		PCinc_ctrl:	out std_logic;
+		PCclr_ctrl:	out std_logic;
+		IRld_ctrl:	out std_logic;
+		Ms_ctrl:	out std_logic_vector(1 downto 0);
+		Mre_ctrl:	out std_logic;
+		Mwe_ctrl:	out std_logic;
+		oe_ctrl:	out std_logic;
+		mem_read2:	out std_logic
+	);
 end component;
 
 component IR is
