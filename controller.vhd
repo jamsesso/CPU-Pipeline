@@ -75,8 +75,9 @@ architecture fsm of controller is
 	
 	signal fetch_state : FetchState := PreFetch;
 	signal exec_state : ExecuteState := First;
-	shared variable fetch_ready : std_logic;
+	shared variable fetch_ready : std_logic := '0';
 	shared variable opcode : std_logic_vector(3 downto 0);
+	shared variable halt_cpu : std_logic := '0';
 begin
 	-- Fetch stage.
 	FetchStage: process(clock, rst, IR_word) begin
@@ -87,7 +88,7 @@ begin
 			PCclr_ctrl  <= '1';
 			PCinc_ctrl  <= '0';
 			IRld_ctrl   <= '0';
-		elsif rising_edge(clock) then
+		elsif rising_edge(clock) and halt_cpu = '0' then
 			case fetch_state is
 				when PreFetch =>
 					PCclr_ctrl <= '0';
@@ -126,7 +127,7 @@ begin
 			Mwe_ctrl   <= '0';
 			jmpen_ctrl <= '0';
 			oe_ctrl    <= '0';
-		elsif rising_edge(clock) and fetch_ready = '1' then
+		elsif rising_edge(clock) and fetch_ready = '1' and halt_cpu = '0' then
 			case exec_state is
 				when First =>
 					case opcode is
@@ -183,6 +184,7 @@ begin
 							ALUs_ctrl <= "000";
 							
 						when halt =>
+							halt_cpu  := '1';
 							RFwe_ctrl <= '0';
 							
 						when readm =>
