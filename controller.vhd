@@ -301,35 +301,23 @@ begin
 				when Start_Indirect_Memory_Access =>
 					RFr1a_ctrl <= IR_word(11 downto 8); -- Get the address stored in R1.
 					RFr1e_ctrl <= '1';	                -- Enable port 1 on register file for reading.
-					-- The value in R1 is now available on the RFr1 bus.
-					-- RFr1 bus is connected to RFr1out_dp bus.
-					-- RFr1out_dp bus is connected to dpdata_out bus.
-					-- Next, we need to wire the dpdata_out bus to the maddr_in bus:
 					Ms_ctrl <= "00";
-					-- Now the memory unit sees the value from R1 on its address bus.
-					-- Finally, signal that we intent to read data:
-					Mre_ctrl <= '1';
+					RFs_ctrl <= "01";
 					state <= Write_Indirect_Memory_Access;
 					
 				when Write_Indirect_Memory_Access =>
 					RFr1e_ctrl <= '0';
-					-- At this point, the data at the address specified by R1 is now on the data_out bus of the memory unit.
-					-- data_out is connected to mem_data bus (and IR bus, but we don't care)
-					-- mem_data is option "01" on the smallmux unit.
-					-- We want to connect the mem_data bus to the RFw bus:
-					RFs_ctrl <= "01";
-					-- Done.
+					Mre_ctrl <= '1';
+					RFwa_ctrl <= IR_word(7 downto 4);
 					state <= Save_Indirect_Memory_Access;
 					
 				when Save_Indirect_Memory_Access =>
-					-- Now we simply need to instruct our register file to write the value on the bus into the appropriate register:
-					RFwa_ctrl <= IR_word(7 downto 4);
 					RFwe_ctrl <= '1';
+					Mre_ctrl <= '0';
 					state <= Indirect_Memory_Access_Cleanup;
 					
 				when Indirect_Memory_Access_Cleanup =>
 					RFwe_ctrl <= '0';
-					Mre_ctrl <= '0';
 					state <= S1;
 -- END EXECUTE STAGE
 			  when others =>
