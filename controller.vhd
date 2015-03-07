@@ -104,7 +104,7 @@ begin
 				when IncrementPC =>
 					-- Done loading new instruction into IR, deassert signals.
 					IRld_ctrl  <= '0';
-					mem_read2  <= '0';	
+					mem_read2  <= '0';
 					-- Tell the PC to start incrementing.
 					PCinc_ctrl <= '1';
 					fetch_state <= Decode;
@@ -119,7 +119,7 @@ begin
 	end process;
 	
 	-- Execute stage.
-	ExecuteStage: process(clock, rst, IR_word) begin
+	ExecuteStage: process(clock, rst) begin
 		if rst = '1' then
 			RFs_ctrl   <= "00";
 			RFwe_ctrl  <= '0';
@@ -128,25 +128,53 @@ begin
 			jmpen_ctrl <= '0';
 			oe_ctrl    <= '0';
 		elsif rising_edge(clock) and fetch_ready = '1' and halt_cpu = '0' then
-			case exec_state is
-				when First =>
-					case opcode is
-						when mov1 =>
+			case opcode is
+				when mov1 =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFwa_ctrl <= IR_word(11 downto 8);	
 							RFs_ctrl <= "01";  -- RF[rn] <= mem[direct]
 							Ms_ctrl <= "01";
 							Mre_ctrl <= '1';
 							Mwe_ctrl <= '0';
+							exec_state <= Second;
 							
-						when mov2 =>
+						when Second =>
+							RFwe_ctrl <= '1';
+							Mre_ctrl <= '0';
+							exec_state <= Third;
+							
+						when Third =>
+							RFwe_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when mov2 =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- mem[direct] <= RF[rn]			
 							Ms_ctrl <= "01";
-							ALUs_ctrl <= "000";
+							ALUs_ctrl <= "000";	  
+							--IRld_ctrl <= '0';
+							exec_state <= Second;
 							
-						when mov3 =>
+						when Second =>
+							Mre_ctrl <= '0';
+							Mwe_ctrl <= '1';
+							exec_state <= Third;
+							
+						when Third =>
+							Mwe_ctrl <= '0';
+							RFr1e_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when mov3 =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- mem[RF[rn]] <= RF[rm]
@@ -154,190 +182,221 @@ begin
 							ALUs_ctrl <= "001";
 							RFr2a_ctrl <= IR_word(7 downto 4); 
 							RFr2e_ctrl <= '1'; -- set addr.& data
+							exec_state <= Second;
 							
-						when mov4 =>
+						when Second =>
+							Mre_ctrl <= '0';			
+							Mwe_ctrl <= '1'; -- write into memory
+							exec_state <= Third;
+							
+						when Third =>
+							Mwe_ctrl <= '0';
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when mov4 =>
+					case exec_state is
+						when First =>
 							RFwa_ctrl <= IR_word(11 downto 8);	
 							RFwe_ctrl <= '1'; -- RF[rn] <= imm.
 							RFs_ctrl <= "10";
+							--IRld_ctrl <= '0';
+							exec_state <= Second;
 							
-						when add =>
+						when Second =>
+							RFwe_ctrl <= '0';
+							exec_state <= Third;
+							
+						when Third =>
+							-- Wait state.
+							exec_state <= First;
+					end case;
+					
+				when add =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- RF[r3] <= RF[r1] + RF[r2]
 							RFr2e_ctrl <= '1'; 
 							RFr2a_ctrl <= IR_word(7 downto 4);
 							ALUs_ctrl <= "010";
+							exec_state <= Second;
 							
-						when subt =>
+						when Second =>
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(3 downto 0);
+							RFwe_ctrl <= '1';
+							exec_state <= Third;
+							
+						when Third =>
+							RFwe_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when subt =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- RF[rn] <= RF[rn] - RF[rm]
 							RFr2a_ctrl <= IR_word(7 downto 4);
 							RFr2e_ctrl <= '1';  
 							ALUs_ctrl <= "011";
+							exec_state <= Second;
 							
-						when jz =>
+						when Second =>
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(3 downto 0);
+							RFwe_ctrl <= '1';
+							exec_state <= Third;
+							
+						when Third =>
+							RFwe_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when jz =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							jmpen_ctrl <= '1';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- jz if R[rn] = 0
 							ALUs_ctrl <= "000";
+							exec_state <= Second;
 							
-						when halt =>
-							halt_cpu  := '1';
-							RFwe_ctrl <= '0';
+						when Second =>
+							RFr1e_ctrl <= '0';
+							exec_state <= Third;
 							
-						when readm =>
+						when Third =>
+							jmpen_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when halt =>
+					case exec_state is
+						when First =>
+							halt_cpu := '1';
+							
+						when others => -- Doesn't matter, CPU is halted.
+					end case;
+					
+				when readm =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							Ms_ctrl <= "01";
 							Mre_ctrl <= '1'; -- read memory
 							Mwe_ctrl <= '0';
+							exec_state <= Second;
 							
-						when mult =>
+						when Second =>
+							oe_ctrl <= '1'; 
+							exec_state <= Third;
+							
+						when Third =>
+							oe_ctrl  <= '0';
+							Mre_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when mult =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- RF[r3] <= RF[r1] * RF[r2]
 							RFr2e_ctrl <= '1'; 
 							RFr2a_ctrl <= IR_word(7 downto 4);
 							ALUs_ctrl <= "100";
+							exec_state <= Second;
 							
-						when incr =>
+						when Second =>
+							RFr1e_ctrl <= '0';
+							RFr2e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(3 downto 0);
+							RFwe_ctrl <= '1';
+							exec_state <= Third;
+							
+						when Third =>
+							RFwe_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when incr =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8); -- Get R1 from instruction.
 							RFr1e_ctrl <= '1';                  -- Enable port 1 on register file to read value.
 							ALUs_ctrl <= "101";                 -- Select "increment" option in ALU.
+							exec_state <= Second;
 							
-						when decr =>
+						when Second =>
+							RFr1e_ctrl <= '0'; -- Disable reading from register file signal.
+							RFs_ctrl <= "00";  -- Put result from the ALU onto the RF write bus.
+							RFwa_ctrl <= IR_word(11 downto 8);
+							RFwe_ctrl <= '1';
+							exec_state <= Third;
+							
+						when Third =>
+							RFwe_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when decr =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8);
 							RFr1e_ctrl <= '1';
 							ALUs_ctrl <= "110";
+							exec_state <= Second;
 							
-						when mov5 =>
+						when Second =>
+							RFr1e_ctrl <= '0';
+							RFs_ctrl <= "00";
+							RFwa_ctrl <= IR_word(11 downto 8);
+							RFwe_ctrl <= '1';
+							exec_state <= Third;
+							
+						when Third =>
+							RFwe_ctrl <= '0';
+							exec_state <= First;
+					end case;
+					
+				when mov5 =>
+					case exec_state is
+						when First =>
 							RFwe_ctrl <= '0';
 							RFr1a_ctrl <= IR_word(11 downto 8); -- Get the address stored in R1.
 							RFr1e_ctrl <= '1';	                -- Enable port 1 on register file for reading.
 							Ms_ctrl <= "00";
 							RFs_ctrl <= "01";
-						
-						when others =>
-					end case;
-					exec_state <= Second;
-					
-				when Second =>
-					case opcode is
-						when mov1 =>
-							RFwe_ctrl <= '1'; 
-							Mre_ctrl <= '0';
+							exec_state <= Second;
 							
-						when mov2 =>
-							Mre_ctrl <= '0';
-							Mwe_ctrl <= '1';
-							
-						when mov3 =>
-							Mre_ctrl <= '0';			
-							Mwe_ctrl <= '1'; -- write into memory
-							
-						when mov4 =>
-							RFwe_ctrl <= '0';
-							
-						when add =>
-							RFr1e_ctrl <= '0';
-							RFr2e_ctrl <= '0';
-							RFs_ctrl <= "00";
-							RFwa_ctrl <= IR_word(3 downto 0);
-							RFwe_ctrl <= '1';
-							
-						when subt =>
-							RFr1e_ctrl <= '0';
-							RFr2e_ctrl <= '0';
-							RFs_ctrl <= "00";
-							RFwa_ctrl <= IR_word(3 downto 0);
-							RFwe_ctrl <= '1';
-							
-						when jz =>
-							RFr1e_ctrl <= '0';
-							
-						when halt => -- Wait state.
-							
-						when readm =>
-							oe_ctrl <= '1'; 
-							
-						when mult =>
-							RFr1e_ctrl <= '0';
-							RFr2e_ctrl <= '0';
-							RFs_ctrl <= "00";
-							RFwa_ctrl <= IR_word(3 downto 0);
-							RFwe_ctrl <= '1';
-							
-						when incr =>
-							RFr1e_ctrl <= '0'; -- Disable reading from register file signal.
-							RFs_ctrl <= "00";  -- Put result from the ALU onto the RF write bus.
-							RFwa_ctrl <= IR_word(11 downto 8);
-							RFwe_ctrl <= '1';
-							
-						when decr =>
-							RFr1e_ctrl <= '0';
-							RFs_ctrl <= "00";
-							RFwa_ctrl <= IR_word(11 downto 8);
-							RFwe_ctrl <= '1';
-							
-						when mov5 =>
+						when Second =>
 							RFr1e_ctrl <= '0';
 							Mre_ctrl <= '1';
 							RFwa_ctrl <= IR_word(7 downto 4);
+							exec_state <= Third;
 							
-						when others =>
-					end case;
-					exec_state <= Third;
-					
-				when Third =>
-					case opcode is
-						when mov1 =>
-							RFwe_ctrl <= '0';
-							
-						when mov2 =>
-							Mwe_ctrl <= '0';
-							RFr1e_ctrl <= '0';
-							
-						when mov3 =>
-							Mwe_ctrl <= '0';
-							RFr1e_ctrl <= '0';
-							RFr2e_ctrl <= '0';
-							
-						when mov4 => -- Wait state.
-							
-						when add =>
-							RFwe_ctrl <= '0';
-							
-						when subt =>
-							RFwe_ctrl <= '0';
-							
-						when jz =>
-							jmpen_ctrl <= '0';
-							
-						when halt => -- Wait state.
-							
-						when readm =>
-							oe_ctrl <= '0';
-							Mre_ctrl <= '0';
-							
-						when mult =>
-							RFwe_ctrl <= '0';
-							
-						when incr =>
-							RFwe_ctrl <= '0';
-							
-						when decr =>
-							RFwe_ctrl <= '0';
-							
-						when mov5 =>
+						when Third =>
 							RFwe_ctrl <= '1';
 							Mre_ctrl <= '0';
-						
-						when others =>
+							exec_state <= First;
 					end case;
-					exec_state <= First;
+				
+				when others =>
 			end case;
 		end if;
 	end process;

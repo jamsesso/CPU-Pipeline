@@ -34,15 +34,26 @@ begin
 	write: process(clock, rst, Mre, address, data_in)
 	begin
 		if rst='1' then
+			-- Test arithmetic operations.
+--			tmp_ram <= (
+--				0 => x"3103",
+--				1 => x"3201",
+--				2 => x"4123",
+--				3 => x"5124",
+--				4 => x"8125",
+--				others => x"0000"
+--			);
+
 			-- test increments and decrement instructions
 			tmp_ram <= (
-				0 => "0011000100001111", -- R1 <- 0x0F       (R1 is a pointer to the address 0x0F)
-				1 => "0011001000110011", -- R2 <- 0x33       (R2 holds a test value)
-				2 => "0001001000001111", -- MEM[0x0F] <- R2  (Write R2 to memory)
-				3 => "1011000100110000", -- R3 <- MEM[R1]    (Use pointer to read value into R3)
-				4 => "0001001100010000", -- MEM[0x10] <- R3  (Save R3 into next address, 0x10)
-				5 => "0111000000010000", -- OUTPUT MEM[0x10] (should be 33)
-				6 => "1111000000000000",
+				0 => "0011000100001111", -- 0x310F   R1 <- 0x0F       (R1 is a pointer to the address 0x0F)
+				1 => "0011001000110011", -- 0x3233   R2 <- 0x33       (R2 holds a test value)
+				2 => "0001001000001111", -- 0x120F   MEM[0x0F] <- R2  (Write R2 to memory)
+				3 => "0111000000001111", -- 0x700F   OUTPUT MEM[0x0F] (should be 0x33)
+				4 => "1011000100110000", -- 0xB130   R3 <- MEM[R1]    (Use pointer to read value into R3)
+				5 => "0001001100010000", -- 0x1310   MEM[0x10] <- R3  (Save R3 into next address, 0x10)
+				6 => "0111000000010000", -- 0x7010   OUTPUT MEM[0x10] (should be 33)
+				7 => "1111000000000000", -- 0xF000   HALT
 				others => "0000000000000000"
 			);
 			
