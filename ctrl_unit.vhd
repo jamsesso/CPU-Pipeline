@@ -37,7 +37,8 @@ port(	clock_cu:	in 	std_logic;
 	
 	-- New memory signals.
 	mem_read2 : out std_logic;
-	mem_addr2 : out std_logic_vector(7 downto 0)
+	mem_addr2 : out std_logic_vector(7 downto 0);
+	IR_dir_addr_debug : out std_logic_vector(15 downto 0)
 );
 end ctrl_unit;
 
@@ -55,6 +56,7 @@ begin
   IR2mux_b <= "000000000000" & IR_sig(11 downto 8);	
   immdata <= "00000000" & IR_sig(7 downto 0);
   IR_debug <= IR_sig;
+  IR_dir_addr_debug <= IR2mux_a;
   mem_addr2 <= PC2addr(7 downto 0);
   PC2mux <= PC2addr;
   

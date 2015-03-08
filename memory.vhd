@@ -34,28 +34,52 @@ begin
 	write: process(clock, rst, Mre, address, data_in)
 	begin
 		if rst='1' then
+			-- Jump test program.
+			tmp_ram <= (
+				0 => x"3A99", -- R10 = 0x99
+				1 => x"1A60", -- MEM[0x60] = R10
+				2 => x"7060", -- OUTPUT MEM[0x60]
+				3 => x"AA00", -- R10--
+				4 => x"6001", -- JUMP TO 0x01
+				others => x"0000"
+			);
+			
+			-- Test moves.
+--			tmp_ram <= (
+--				0 => x"3677", -- MOV4: R6 = 0x77
+--				1 => x"1650", -- MOV2: MEM[0x50] = R6
+--				2 => x"7050", -- OUTPUT MEM[0x50]     (should be 0x77)
+--				3 => x"0750", -- MOV1: R7 = MEM[0x50] (should be 0x77)
+--				4 => x"9700", -- R7++                 (should be 0x78)
+--				5 => x"2670", -- MOV3: MEM[R6] = R7
+--				6 => x"7077", -- OUTPUT MEM[0x77]     (should be 0x78)
+--				others => x"0000"
+--			);
+
 			-- Test arithmetic operations.
 --			tmp_ram <= (
---				0 => x"3103",
---				1 => x"3201",
---				2 => x"4123",
---				3 => x"5124",
---				4 => x"8125",
+--				0 => x"3103", -- R1 = 3
+--				1 => x"3201", -- R2 = 1
+--				2 => x"4123", -- R3 = R1 + R2
+--				3 => x"5124", -- R4 = R1 - R2
+--				4 => x"8125", -- R5 = R1 * R2
+--				5 => x"9100", -- R1++
+--				6 => x"A200", -- R2--
 --				others => x"0000"
 --			);
 
 			-- test increments and decrement instructions
-			tmp_ram <= (
-				0 => "0011000100001111", -- 0x310F   R1 <- 0x0F       (R1 is a pointer to the address 0x0F)
-				1 => "0011001000110011", -- 0x3233   R2 <- 0x33       (R2 holds a test value)
-				2 => "0001001000001111", -- 0x120F   MEM[0x0F] <- R2  (Write R2 to memory)
-				3 => "0111000000001111", -- 0x700F   OUTPUT MEM[0x0F] (should be 0x33)
-				4 => "1011000100110000", -- 0xB130   R3 <- MEM[R1]    (Use pointer to read value into R3)
-				5 => "0001001100010000", -- 0x1310   MEM[0x10] <- R3  (Save R3 into next address, 0x10)
-				6 => "0111000000010000", -- 0x7010   OUTPUT MEM[0x10] (should be 33)
-				7 => "1111000000000000", -- 0xF000   HALT
-				others => "0000000000000000"
-			);
+--			tmp_ram <= (
+--				0 => "0011000100001111", -- 0x310F   R1 <- 0x0F       (R1 is a pointer to the address 0x0F)
+--				1 => "0011001000110011", -- 0x3233   R2 <- 0x33       (R2 holds a test value)
+--				2 => "0001001000001111", -- 0x120F   MEM[0x0F] <- R2  (Write R2 to memory)
+--				3 => "0100111111111111", -- 0x700F   OUTPUT MEM[0x0F] (should be 0x33) NOP (ADD RF RF RF)
+--				4 => "1011000100110000", -- 0xB130   R3 <- MEM[R1]    (Use pointer to read value into R3)
+--				5 => "0001001100010000", -- 0x1310   MEM[0x10] <- R3  (Save R3 into next address, 0x10)
+--				6 => "0111000000010000", -- 0x7010   OUTPUT MEM[0x10] (should be 33)
+--				7 => "1111000000000000", -- 0xF000   HALT
+--				others => "0000000000000000"
+--			);
 			
 			-- generate first 7 factorials
 --			tmp_ram <= (

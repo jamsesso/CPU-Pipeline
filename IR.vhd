@@ -27,6 +27,8 @@ begin
     if IRld = '1' then
 	  IRout <= IRin;
 	  dir_addr <= "00000000" & IRin(7 downto 0);
+	else
+		
     end if;
   end process;
 end behv;

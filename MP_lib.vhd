@@ -10,19 +10,19 @@ type ram_type is array (0 to 255) of
 
 constant ZERO : std_logic_vector(15 downto 0) := "0000000000000000";
 constant HIRES : std_logic_vector(15 downto 0) := "ZZZZZZZZZZZZZZZZ";
-constant mov1 : std_logic_vector(3 downto 0) := "0000";
-constant mov2 : std_logic_vector(3 downto 0) := "0001";
-constant mov3 : std_logic_vector(3 downto 0) := "0010";
-constant mov4 : std_logic_vector(3 downto 0) := "0011";
-constant add  : std_logic_vector(3 downto 0) := "0100";
-constant subt : std_logic_vector(3 downto 0) := "0101";
+constant mov1 : std_logic_vector(3 downto 0) := "0000"; --
+constant mov2 : std_logic_vector(3 downto 0) := "0001"; --
+constant mov3 : std_logic_vector(3 downto 0) := "0010"; -- 
+constant mov4 : std_logic_vector(3 downto 0) := "0011"; --
+constant add  : std_logic_vector(3 downto 0) := "0100"; --
+constant subt : std_logic_vector(3 downto 0) := "0101"; -- 
 constant jz  : std_logic_vector(3 downto 0) := "0110";
-constant halt  : std_logic_vector(3 downto 0) := "1111";
-constant readm  : std_logic_vector(3 downto 0) := "0111";
-constant mult : std_logic_vector(3 downto 0) := "1000";
-constant incr : std_logic_vector(3 downto 0) := "1001";
-constant decr : std_logic_vector(3 downto 0) := "1010";
-constant mov5 : std_logic_vector(3 downto 0) := "1011";
+constant halt  : std_logic_vector(3 downto 0) := "1111"; --
+constant readm  : std_logic_vector(3 downto 0) := "0111"; --
+constant mult : std_logic_vector(3 downto 0) := "1000"; --
+constant incr : std_logic_vector(3 downto 0) := "1001"; --
+constant decr : std_logic_vector(3 downto 0) := "1010"; --
+constant mov5 : std_logic_vector(3 downto 0) := "1011"; 
 
 component alu is
 port (	num_A: 	in std_logic_vector(15 downto 0);
@@ -170,7 +170,8 @@ port(	clock_cu:	in 	std_logic;
 	Mwe_cu:		out 	std_logic;
 	oe_cu:		out 	std_logic;
 	mem_read2 : out std_logic;
-	mem_addr2 : out std_logic_vector(7 downto 0)
+	mem_addr2 : out std_logic_vector(7 downto 0);
+	IR_dir_addr_debug : out std_logic_vector(15 downto 0)
 );
 end component;
 

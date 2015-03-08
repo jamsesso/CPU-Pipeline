@@ -78,6 +78,7 @@ architecture fsm of controller is
 	shared variable fetch_ready : std_logic := '0';
 	shared variable opcode : std_logic_vector(3 downto 0);
 	shared variable halt_cpu : std_logic := '0';
+	shared variable flush_pipeline : std_logic := '0';
 begin
 	-- Fetch stage.
 	FetchStage: process(clock, rst, IR_word) begin
@@ -86,6 +87,12 @@ begin
 			fetch_state <= PreFetch;
 			mem_read2   <= '0';
 			PCclr_ctrl  <= '1';
+			PCinc_ctrl  <= '0';
+			IRld_ctrl   <= '0';
+		elsif flush_pipeline = '1' then
+			fetch_ready := '0';
+			fetch_state <= Fetch;
+			mem_read2   <= '0';
 			PCinc_ctrl  <= '0';
 			IRld_ctrl   <= '0';
 		elsif rising_edge(clock) and halt_cpu = '0' then
@@ -157,8 +164,7 @@ begin
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- mem[direct] <= RF[rn]			
 							Ms_ctrl <= "01";
-							ALUs_ctrl <= "000";	  
-							--IRld_ctrl <= '0';
+							ALUs_ctrl <= "000";
 							exec_state <= Second;
 							
 						when Second =>
@@ -202,7 +208,6 @@ begin
 							RFwa_ctrl <= IR_word(11 downto 8);	
 							RFwe_ctrl <= '1'; -- RF[rn] <= imm.
 							RFs_ctrl <= "10";
-							--IRld_ctrl <= '0';
 							exec_state <= Second;
 							
 						when Second =>
@@ -265,6 +270,7 @@ begin
 				when jz =>
 					case exec_state is
 						when First =>
+							flush_pipeline := '1';
 							RFwe_ctrl <= '0';
 							jmpen_ctrl <= '1';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
@@ -277,7 +283,13 @@ begin
 							exec_state <= Third;
 							
 						when Third =>
+							flush_pipeline := '0';
 							jmpen_ctrl <= '0';
+							RFs_ctrl   <= "00";
+							RFwe_ctrl  <= '0';
+							Mre_ctrl   <= '0';
+							Mwe_ctrl   <= '0';
+							oe_ctrl    <= '0';
 							exec_state <= First;
 					end case;
 					

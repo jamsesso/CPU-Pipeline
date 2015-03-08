@@ -27,6 +27,7 @@ port( 	cpu_clk:	in std_logic;
 		D_ALUs_s: out std_logic_vector(2 downto 0);
 		D_RFs_s: out std_logic_vector(1 downto 0);
 		D_PCld_s, D_Mre_s, D_Mwe_s, D_jpz_s, D_oe_s: out std_logic;
+		D_IR_dir_addr : out std_logic_vector(15 downto 0);
 		D_Register0 : out std_logic_vector(15 downto 0);
 		D_Register1 : out std_logic_vector(15 downto 0);
 		D_Register2 : out std_logic_vector(15 downto 0);
@@ -62,6 +63,7 @@ signal RFwe_s, RFr1e_s, RFr2e_s: std_logic;
 signal ALUs_s: std_logic_vector(2 downto 0);
 signal RFs_s: std_logic_vector(1 downto 0);
 signal PCld_s, Mre_s, Mwe_s, jpz_s, oe_s: std_logic;
+signal debug_IR_dir_addr : std_logic_vector(15 downto 0);
 
 begin
 	
@@ -69,7 +71,7 @@ begin
 	
 	Unit0: ctrl_unit port map(	cpu_clk,cpu_rst,PCld_s,mem_data_out2,rfout_bus,addr_bus,
 								immd_bus, IR_debug, RFs_s,RFwa_s,RFr1a_s,RFr2a_s,RFwe_s,
-								RFr1e_s,RFr2e_s,jpz_s,ALUs_s,Mre_s,Mwe_s,oe_s, mem_read2, mem_addr2);
+								RFr1e_s,RFr2e_s,jpz_s,ALUs_s,Mre_s,Mwe_s,oe_s, mem_read2, mem_addr2, debug_IR_dir_addr);
 	Unit1: datapath port map(	cpu_clk,cpu_rst,immd_bus,mdout_bus,
 								RFs_s,RFwa_s,RFr1a_s,RFr2a_s,RFwe_s,RFr1e_s,
 								RFr2e_s,jpz_s,ALUs_s,oe_s,PCld_s,rfout_bus,
@@ -102,6 +104,6 @@ D_Mwe_s<=Mwe_s;
 D_jpz_s<=jpz_s;
 D_oe_s<=oe_s;
 D_IR <= IR_debug;
-
+D_IR_dir_addr <= debug_IR_dir_addr;
 
 end structure;
