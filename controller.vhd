@@ -71,7 +71,7 @@ architecture fsm of controller is
 	
 	-- New stuff:
 	type FetchState is (PreFetch, Fetch, IncrementPC, Decode);
-	type ExecuteState is (First, Second, Third);
+	type ExecuteState is (First, Second, Third, JZWait1, JZWait2, JZWait3);
 	
 	signal fetch_state : FetchState := PreFetch;
 	signal exec_state : ExecuteState := First;
@@ -90,7 +90,6 @@ begin
 			PCinc_ctrl  <= '0';
 			IRld_ctrl   <= '0';
 		elsif flush_pipeline = '1' then
-			fetch_ready := '0';
 			fetch_state <= Fetch;
 			mem_read2   <= '0';
 			PCinc_ctrl  <= '0';
@@ -155,6 +154,8 @@ begin
 						when Third =>
 							RFwe_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when mov2 =>
@@ -176,6 +177,8 @@ begin
 							Mwe_ctrl <= '0';
 							RFr1e_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when mov3 =>
@@ -200,6 +203,8 @@ begin
 							RFr1e_ctrl <= '0';
 							RFr2e_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when mov4 =>
@@ -217,6 +222,8 @@ begin
 						when Third =>
 							-- Wait state.
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when add =>
@@ -241,6 +248,8 @@ begin
 						when Third =>
 							RFwe_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when subt =>
@@ -265,6 +274,8 @@ begin
 						when Third =>
 							RFwe_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when jz =>
@@ -272,13 +283,13 @@ begin
 						when First =>
 							flush_pipeline := '1';
 							RFwe_ctrl <= '0';
-							jmpen_ctrl <= '1';
 							RFr1a_ctrl <= IR_word(11 downto 8);	
 							RFr1e_ctrl <= '1'; -- jz if R[rn] = 0
 							ALUs_ctrl <= "000";
 							exec_state <= Second;
 							
 						when Second =>
+							jmpen_ctrl <= '1';
 							RFr1e_ctrl <= '0';
 							exec_state <= Third;
 							
@@ -290,6 +301,15 @@ begin
 							Mre_ctrl   <= '0';
 							Mwe_ctrl   <= '0';
 							oe_ctrl    <= '0';
+							exec_state <= JZWait1;
+							
+						when JZWait1 =>
+							exec_state <= JZWait2;
+							
+						when JZWait2 =>
+							exec_state <= JZWait3;
+							
+						when JZWait3 =>
 							exec_state <= First;
 					end case;
 					
@@ -318,6 +338,8 @@ begin
 							oe_ctrl  <= '0';
 							Mre_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when mult =>
@@ -342,6 +364,8 @@ begin
 						when Third =>
 							RFwe_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when incr =>
@@ -363,6 +387,8 @@ begin
 						when Third =>
 							RFwe_ctrl <= '0';
 							exec_state <= First;
+							
+						when others =>
 					end case;
 					
 				when decr =>
@@ -384,6 +410,8 @@ begin
 						when Third =>
 							RFwe_ctrl <= '0';
 							exec_state <= First;
+						
+						when others =>
 					end case;
 					
 				when mov5 =>
@@ -406,6 +434,8 @@ begin
 							RFwe_ctrl <= '1';
 							Mre_ctrl <= '0';
 							exec_state <= First;
+						
+						when others =>
 					end case;
 				
 				when others =>

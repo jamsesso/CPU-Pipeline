@@ -35,14 +35,14 @@ begin
 	begin
 		if rst='1' then
 			-- Jump test program.
-			tmp_ram <= (
-				0 => x"3A99", -- R10 = 0x99
-				1 => x"1A60", -- MEM[0x60] = R10
-				2 => x"7060", -- OUTPUT MEM[0x60]
-				3 => x"AA00", -- R10--
-				4 => x"6001", -- JUMP TO 0x01
-				others => x"0000"
-			);
+--			tmp_ram <= (
+--				0 => x"3A99", -- R10 = 0x99
+--				1 => x"1A60", -- MEM[0x60] = R10
+--				2 => x"7060", -- OUTPUT MEM[0x60]
+--				3 => x"AA00", -- R10--
+--				4 => x"6001", -- JUMP TO 0x01
+--				others => x"0000"
+--			);
 			
 			-- Test moves.
 --			tmp_ram <= (
@@ -82,29 +82,29 @@ begin
 --			);
 			
 			-- generate first 7 factorials
---			tmp_ram <= (
---				0  => x"3000", -- MOV4 R0, 0x00
---				1  => x"3150", -- MOV4 R1, 0x50
---				2  => x"3201", -- MOV4 R2, 0x01
---				3  => x"3300", -- MOV4 R3, 0x00
---				4  => x"3401", -- MOV4 R4, 0x01
---				5  => x"214F", -- MOV3 R1, R4
---				6  => x"4045", -- ADD R0, R4, R5
---				7  => x"4323", -- ADD R3, R2, R3
---				8  => x"8354", -- MULT R3, R5, R4
---				9  => x"4121", -- ADD R1, R2, R1
---				10 => x"0656", -- MOV1 R6, 0x56
---				11 => x"6605", -- JZ R6, 0x05
---				12 => x"7050", -- OUT 0x50
---				13 => x"7051", -- OUT 0x51
---				14 => x"7052", -- OUT 0x52
---				15 => x"7053", -- OUT 0x53
---				16 => x"7054", -- OUT 0x54
---				17 => x"7055", -- OUT 0x55
---				18 => x"7056", -- OUT 0x56
---				19 => x"F000", -- HALT
---				others => x"0000"
---			);
+			tmp_ram <= (
+				0  => x"3000", -- MOV4 R0, 0x00
+				1  => x"3150", -- MOV4 R1, 0x50
+				2  => x"3201", -- MOV4 R2, 0x01
+				3  => x"3300", -- MOV4 R3, 0x00
+				4  => x"3401", -- MOV4 R4, 0x01
+				5  => x"214F", -- MOV3 R1, R4
+				6  => x"4045", -- ADD R0, R4, R5
+				7  => x"4323", -- ADD R3, R2, R3
+				8  => x"8354", -- MULT R3, R5, R4
+				9  => x"4121", -- ADD R1, R2, R1
+				10 => x"0656", -- MOV1 R6, 0x56
+				11 => x"6605", -- JZ R6, 0x05
+				12 => x"7050", -- OUT 0x50
+				13 => x"7051", -- OUT 0x51
+				14 => x"7052", -- OUT 0x52
+				15 => x"7053", -- OUT 0x53
+				16 => x"7054", -- OUT 0x54
+				17 => x"7055", -- OUT 0x55
+				18 => x"7056", -- OUT 0x56
+				19 => x"F000", -- HALT
+				others => x"0000"
+			);
 		else
 			if (clock'event and clock = '1') then
 				if (Mwe ='1' and Mre = '0') then
