@@ -17,6 +17,7 @@ entity microprocessor is
 port( 	cpu_clk:	in std_logic;
 		cpu_rst:	in std_logic;
 		cpu_output:	out std_logic_vector(15 downto 0);
+		performance_counter : out std_logic_vector(15 downto 0);
 		
 -- Debug variables
 		D_addr_bus,D_mdin_bus,D_mdout_bus,D_immd_bus, D_IR, D_rfout_bus: out std_logic_vector(15 downto 0);  
@@ -65,13 +66,18 @@ signal RFs_s: std_logic_vector(1 downto 0);
 signal PCld_s, Mre_s, Mwe_s, jpz_s, oe_s: std_logic;
 signal debug_IR_dir_addr : std_logic_vector(15 downto 0);
 
+signal benchmark_enable : std_logic;
+signal benchmark_clear : std_logic;
+
 begin
 	
 	mem_addr <= addr_bus(7 downto 0); 
 	
 	Unit0: ctrl_unit port map(	cpu_clk,cpu_rst,PCld_s,mem_data_out2,rfout_bus,addr_bus,
 								immd_bus, IR_debug, RFs_s,RFwa_s,RFr1a_s,RFr2a_s,RFwe_s,
-								RFr1e_s,RFr2e_s,jpz_s,ALUs_s,Mre_s,Mwe_s,oe_s, mem_read2, mem_addr2, debug_IR_dir_addr);
+								RFr1e_s,RFr2e_s,jpz_s,ALUs_s,Mre_s,Mwe_s,oe_s, mem_read2, mem_addr2, debug_IR_dir_addr,
+								benchmark_enable, benchmark_clear);
+								
 	Unit1: datapath port map(	cpu_clk,cpu_rst,immd_bus,mdout_bus,
 								RFs_s,RFwa_s,RFr1a_s,RFr2a_s,RFwe_s,RFr1e_s,
 								RFr2e_s,jpz_s,ALUs_s,oe_s,PCld_s,rfout_bus,
@@ -80,7 +86,10 @@ begin
 								D_Register4, D_Register5, D_Register6, D_Register7, 
 								D_Register8, D_Register9, D_RegisterA, D_RegisterB, 
 								D_RegisterC, D_RegisterD, D_RegisterE, D_RegisterF);
+								
 	Unit2: memory port map(	cpu_clk,cpu_rst,Mre_s, mem_read2, Mwe_s,mem_addr, mem_addr2, mdin_bus,mdout_bus, mem_data_out2);
+	
+	Unit3: PerformanceCounter port map(cpu_clk, benchmark_enable, benchmark_clear, performance_counter);
 
 -- Debug code
 D_addr_bus <=addr_bus;
