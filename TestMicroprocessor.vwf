@@ -4609,9 +4609,9 @@ TRANSITION_LIST("cpu_clk")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 23000;
-			LEVEL 0 FOR 0.5;
-			LEVEL 1 FOR 0.5;
+			REPEAT = 2300;
+			LEVEL 0 FOR 5.0;
+			LEVEL 1 FOR 5.0;
 		}
 	}
 }
@@ -4621,8 +4621,8 @@ TRANSITION_LIST("cpu_rst")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 1 FOR 340.0;
-		LEVEL 0 FOR 22660.0;
+		LEVEL 1 FOR 20.0;
+		LEVEL 0 FOR 22980.0;
 	}
 }
 
@@ -4631,15 +4631,7 @@ TRANSITION_LIST("cpu_output[15]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4648,15 +4640,7 @@ TRANSITION_LIST("cpu_output[14]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4665,15 +4649,7 @@ TRANSITION_LIST("cpu_output[13]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4682,15 +4658,7 @@ TRANSITION_LIST("cpu_output[12]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4699,15 +4667,7 @@ TRANSITION_LIST("cpu_output[11]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4716,15 +4676,7 @@ TRANSITION_LIST("cpu_output[10]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4733,15 +4685,7 @@ TRANSITION_LIST("cpu_output[9]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4750,15 +4694,7 @@ TRANSITION_LIST("cpu_output[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4767,15 +4703,7 @@ TRANSITION_LIST("cpu_output[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4784,15 +4712,7 @@ TRANSITION_LIST("cpu_output[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4801,15 +4721,7 @@ TRANSITION_LIST("cpu_output[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 9;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 1 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4818,17 +4730,7 @@ TRANSITION_LIST("cpu_output[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 8;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 1 FOR 40.0;
-		LEVEL Z FOR 200.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4837,23 +4739,7 @@ TRANSITION_LIST("cpu_output[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 6;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		NODE
-		{
-			REPEAT = 2;
-			LEVEL 1 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 200.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4862,25 +4748,7 @@ TRANSITION_LIST("cpu_output[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 5;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 1 FOR 40.0;
-		LEVEL Z FOR 200.0;
-		LEVEL 0 FOR 40.0;
-		NODE
-		{
-			REPEAT = 2;
-			LEVEL Z FOR 200.0;
-			LEVEL 1 FOR 40.0;
-		}
-		LEVEL Z FOR 200.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4889,27 +4757,7 @@ TRANSITION_LIST("cpu_output[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 3;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		NODE
-		{
-			REPEAT = 2;
-			LEVEL 1 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		NODE
-		{
-			REPEAT = 4;
-			LEVEL 0 FOR 40.0;
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 1 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 
@@ -4918,29 +4766,7 @@ TRANSITION_LIST("cpu_output[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL Z FOR 17780.0;
-		NODE
-		{
-			REPEAT = 2;
-			LEVEL 0 FOR 40.0;
-			NODE
-			{
-				REPEAT = 2;
-				LEVEL Z FOR 200.0;
-				LEVEL 1 FOR 40.0;
-			}
-			LEVEL Z FOR 200.0;
-		}
-		LEVEL 0 FOR 40.0;
-		NODE
-		{
-			REPEAT = 2;
-			LEVEL Z FOR 200.0;
-			LEVEL 1 FOR 40.0;
-		}
-		LEVEL Z FOR 200.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL Z FOR 3020.0;
+		LEVEL Z FOR 23000.0;
 	}
 }
 

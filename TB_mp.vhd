@@ -12,7 +12,7 @@ entity TB_MP is
 		display0	: out std_logic_vector(0 to 6);
 		display1	: out std_logic_vector(0 to 6);
 		display2	: out std_logic_vector(0 to 6);
-		display3	: out std_logic_vector(0 to 6);
+		display3	: out std_logic_vector(0 to 6)
 	);
 end TB_MP;
 
@@ -21,7 +21,7 @@ architecture behv of TB_MP is
 	signal performance_counter : std_logic_vector(15 downto 0);
 begin
 	-- Set up the processor.
-	Processor: microprocessor port map(clock, reset, output, performance_counter);
+	Processor: microprocessor port map(clock, reset, cpu_output, performance_counter);
 	
 	-- Display performance counter. The bus is 16 bits so we need 4 hex displays.
 	HexDisp3: SevenSegment port map(performance_counter(15 downto 12), display3);

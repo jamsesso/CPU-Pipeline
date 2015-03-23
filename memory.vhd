@@ -43,7 +43,7 @@ begin
 				   --  [1 2 3 4 5]	    	  [0 0 0 0 0]            [1 2 3 4 5]
 
 				-- Populate Marticies A and B.
-				 0 => x"C000",  -- Start performance counter.
+				 0 => x"3001",  -- Start performance counter.
 				 1 => x"3001",	-- R0 = 1
 			 	 2 => x"1064",	-- M[100] <- R0, A[0][0]
 				 3 => x"106E",	-- M[110] <- R0, A[2][0]
@@ -136,7 +136,7 @@ begin
 				80 => x"70AC",	-- output <- M[172] 
 				81 => x"70AD",	-- output <- M[173] 
 				82 => x"70AE",	-- output <- M[174]	
-				83 => x"D000",  -- Stop performance counter.
+				83 => x"3001",  -- Stop performance counter.
 				84 => x"F000",	-- HALT
 			others => x"0000");
 		else
