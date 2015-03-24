@@ -1,12 +1,3 @@
---------------------------------------------------------
--- Simple Microprocessor Design 
---
--- Microprocessor composed of
--- Ctrl_Unit, Data_Path and Memory
--- structural modeling
--- microprocessor.vhd
---------------------------------------------------------
-
 library	ieee;
 use ieee.std_logic_1164.all;  
 use ieee.std_logic_arith.all;			   
@@ -51,28 +42,25 @@ port( 	cpu_clk:	in std_logic;
 end microprocessor;
 
 architecture structure of microprocessor is
+	signal addr_bus,mdin_bus,mdout_bus,immd_bus,rfout_bus, IR_debug : std_logic_vector(15 downto 0);  
+	signal mem_addr: std_logic_vector(7 downto 0);
 
-signal addr_bus,mdin_bus,mdout_bus,immd_bus,rfout_bus, IR_debug : std_logic_vector(15 downto 0);  
-signal mem_addr: std_logic_vector(7 downto 0);
+	-- New memory signals.
+	signal mem_read2 : std_logic;
+	signal mem_addr2 : std_logic_vector(7 downto 0);
+	signal mem_data_out2 : std_logic_vector(15 downto 0);
 
--- New memory signals.
-signal mem_read2 : std_logic;
-signal mem_addr2 : std_logic_vector(7 downto 0);
-signal mem_data_out2 : std_logic_vector(15 downto 0);
+	signal RFwa_s, RFr1a_s, RFr2a_s: std_logic_vector(3 downto 0);
+	signal RFwe_s, RFr1e_s, RFr2e_s: std_logic;
+	signal ALUs_s: std_logic_vector(2 downto 0);
+	signal RFs_s: std_logic_vector(1 downto 0);
+	signal PCld_s, Mre_s, Mwe_s, jpz_s, oe_s: std_logic;
+	signal debug_IR_dir_addr : std_logic_vector(15 downto 0);
 
-signal RFwa_s, RFr1a_s, RFr2a_s: std_logic_vector(3 downto 0);
-signal RFwe_s, RFr1e_s, RFr2e_s: std_logic;
-signal ALUs_s: std_logic_vector(2 downto 0);
-signal RFs_s: std_logic_vector(1 downto 0);
-signal PCld_s, Mre_s, Mwe_s, jpz_s, oe_s: std_logic;
-signal debug_IR_dir_addr : std_logic_vector(15 downto 0);
+	signal benchmark : std_logic;
 
-signal benchmark : std_logic;
-
-signal counter : std_logic_vector(15 downto 0) := x"0000";
-
+	signal counter : std_logic_vector(15 downto 0) := x"0000";
 begin
-	
 	mem_addr <= addr_bus(7 downto 0); 
 	
 	Unit0: ctrl_unit port map(	cpu_clk,cpu_rst,PCld_s,mem_data_out2,rfout_bus,addr_bus,
@@ -92,36 +80,35 @@ begin
 	Unit2: memory port map(	cpu_clk,cpu_rst,Mre_s, mem_read2, Mwe_s,mem_addr, mem_addr2, mdin_bus,mdout_bus, mem_data_out2);
 	
 	process(cpu_clk, benchmark) begin
-		if rising_edge(cpu_clk) and benchmark = '1' then
+		if rising_edge(cpu_clk) and benchmark = '1' and cpu_rst = '0' then
 			counter <= counter + 1;
 		end if;
 	end process;
 
-performance_counter <= counter;
+	performance_counter <= counter;
 
--- Debug code
-D_addr_bus <=addr_bus;
-D_mdin_bus <=mdin_bus;
-D_mdout_bus <=mdout_bus;
-D_immd_bus <=immd_bus;
-D_rfout_bus<=rfout_bus;
-D_mem_addr<=mem_addr;
-D_mem_addr2 <= mem_addr2;
-D_RFwa_s<=RFwa_s;
-D_RFr1a_s<=RFr1a_s;
-D_RFr2a_s<=RFr2a_s;
-D_RFwe_s<=RFwe_s;
-D_RFr1e_s<=RFr1e_s;
-D_RFr2e_s<=RFr2e_s;
-D_ALUs_s<=ALUs_s;
-D_RFs_s<=RFs_s;
-D_PCld_s<=PCld_s;
-D_Mre_s<=Mre_s;
-D_Mwe_s<=Mwe_s;
-D_jpz_s<=jpz_s;
-D_oe_s<=oe_s;
-D_IR <= IR_debug;
-D_IR_dir_addr <= debug_IR_dir_addr;
-D_benchmark <= benchmark;
-
+	-- Debug code
+	D_addr_bus <=addr_bus;
+	D_mdin_bus <=mdin_bus;
+	D_mdout_bus <=mdout_bus;
+	D_immd_bus <=immd_bus;
+	D_rfout_bus<=rfout_bus;
+	D_mem_addr<=mem_addr;
+	D_mem_addr2 <= mem_addr2;
+	D_RFwa_s<=RFwa_s;
+	D_RFr1a_s<=RFr1a_s;
+	D_RFr2a_s<=RFr2a_s;
+	D_RFwe_s<=RFwe_s;
+	D_RFr1e_s<=RFr1e_s;
+	D_RFr2e_s<=RFr2e_s;
+	D_ALUs_s<=ALUs_s;
+	D_RFs_s<=RFs_s;
+	D_PCld_s<=PCld_s;
+	D_Mre_s<=Mre_s;
+	D_Mwe_s<=Mwe_s;
+	D_jpz_s<=jpz_s;
+	D_oe_s<=oe_s;
+	D_IR <= IR_debug;
+	D_IR_dir_addr <= debug_IR_dir_addr;
+	D_benchmark <= benchmark;
 end structure;

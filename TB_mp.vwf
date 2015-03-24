@@ -25,7 +25,7 @@ HEADER
 	VERSION = 1;
 	TIME_UNIT = ns;
 	DATA_OFFSET = 0.0;
-	DATA_DURATION = 1000.0;
+	DATA_DURATION = 20000.0;
 	SIMULATION_TIME = 0.0;
 	GRID_PHASE = 0.0;
 	GRID_PERIOD = 10.0;
@@ -389,9 +389,9 @@ TRANSITION_LIST("clock")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 100;
-			LEVEL 0 FOR 5.0;
-			LEVEL 1 FOR 5.0;
+			REPEAT = 20000;
+			LEVEL 0 FOR 0.5;
+			LEVEL 1 FOR 0.5;
 		}
 	}
 }
@@ -401,7 +401,7 @@ TRANSITION_LIST("display0[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -410,7 +410,7 @@ TRANSITION_LIST("display0[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -419,7 +419,7 @@ TRANSITION_LIST("display0[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -428,7 +428,7 @@ TRANSITION_LIST("display0[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -437,7 +437,7 @@ TRANSITION_LIST("display0[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -446,7 +446,7 @@ TRANSITION_LIST("display0[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -455,7 +455,7 @@ TRANSITION_LIST("display0[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -464,7 +464,7 @@ TRANSITION_LIST("display1[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -473,7 +473,7 @@ TRANSITION_LIST("display1[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -482,7 +482,7 @@ TRANSITION_LIST("display1[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -491,7 +491,7 @@ TRANSITION_LIST("display1[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -500,7 +500,7 @@ TRANSITION_LIST("display1[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -509,7 +509,7 @@ TRANSITION_LIST("display1[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -518,7 +518,7 @@ TRANSITION_LIST("display1[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -527,7 +527,7 @@ TRANSITION_LIST("display2[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -536,7 +536,7 @@ TRANSITION_LIST("display2[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -545,7 +545,7 @@ TRANSITION_LIST("display2[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -554,7 +554,7 @@ TRANSITION_LIST("display2[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -563,7 +563,7 @@ TRANSITION_LIST("display2[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -572,7 +572,7 @@ TRANSITION_LIST("display2[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -581,7 +581,7 @@ TRANSITION_LIST("display2[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -590,7 +590,7 @@ TRANSITION_LIST("display3[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -599,7 +599,7 @@ TRANSITION_LIST("display3[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -608,7 +608,7 @@ TRANSITION_LIST("display3[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -617,7 +617,7 @@ TRANSITION_LIST("display3[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -626,7 +626,7 @@ TRANSITION_LIST("display3[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -635,7 +635,7 @@ TRANSITION_LIST("display3[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -644,7 +644,7 @@ TRANSITION_LIST("display3[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 20000.0;
 	}
 }
 
@@ -653,7 +653,7 @@ TRANSITION_LIST("pipeline")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 20000.0;
 	}
 }
 
@@ -663,7 +663,7 @@ TRANSITION_LIST("reset")
 	{
 		REPEAT = 1;
 		LEVEL 1 FOR 10.0;
-		LEVEL 0 FOR 990.0;
+		LEVEL 0 FOR 19990.0;
 	}
 }
 
@@ -1016,7 +1016,7 @@ DISPLAY_LINE
 
 TIME_BAR
 {
-	TIME = 27350;
+	TIME = 435000;
 	MASTER = TRUE;
 }
 ;

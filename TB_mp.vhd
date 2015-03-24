@@ -8,7 +8,6 @@ entity TB_MP is
 	port(
 		clock 		: in std_logic;
 		reset 		: in std_logic;
-		pipeline 	: in std_logic;
 		display0	: out std_logic_vector(0 to 6);
 		display1	: out std_logic_vector(0 to 6);
 		display2	: out std_logic_vector(0 to 6);
@@ -28,4 +27,4 @@ begin
 	HexDisp2: SevenSegment port map(performance_counter(11 downto 8), display2);
 	HexDisp1: SevenSegment port map(performance_counter(7 downto 4), display1);
 	HexDisp0: SevenSegment port map(performance_counter(3 downto 0), display0);
-end behv;				 
+end behv;
