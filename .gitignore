@@ -37,3 +37,5 @@ incremental_db/
 *.sgate.rvd
 *.sgate_sm.rvd
 *.fit.smsg
+db/TB_mp.ace_cmp.ecobp
+signalprobe_qsf.tcl

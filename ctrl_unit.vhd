@@ -42,8 +42,7 @@ port(	clock_cu:	in 	std_logic;
 	IR_dir_addr_debug : out std_logic_vector(15 downto 0);
 	
 	-- Benchmark signals.
-	benchmark_enable : out std_logic;
-	benchmark_clear : out std_logic
+	benchmark : out std_logic
 );
 end ctrl_unit;
 
@@ -69,7 +68,7 @@ begin
 			    RFr1a_cu,RFr2a_cu,RFwe_cu,RFr1e_cu,
 			    RFr2e_cu,ALUs_cu,jpen_cu,PCinc_sig,
 			    PCclr_sig,IRld_sig,Ms_sig,Mre_cu,Mwe_cu,oe_cu, mem_read2,
-			    benchmark_enable, benchmark_clear);
+			    benchmark);
   U1: PC port map(clock_cu,PCld_cu, PCinc_sig, PCclr_sig, IR2mux_a, PC2addr); -- Wire the PC directly to the memory address bus #2.
   U2: IR port map(mdata_out, IRld_sig, IR2mux_a, IR_sig);
   U3: bigmux port map(dpdata_out,IR2mux_a,PC2mux,IR2mux_b,Ms_sig,maddr_in);

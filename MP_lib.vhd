@@ -78,8 +78,7 @@ package MP_lib is
 			Mwe_ctrl:	out std_logic;
 			oe_ctrl:	out std_logic;
 			mem_read2:	out std_logic;
-			benchmark_enable : out std_logic;
-			benchmark_clear : out std_logic
+			benchmark:  out std_logic
 		);
 	end component;
 
@@ -193,8 +192,7 @@ package MP_lib is
 			mem_read2 : out std_logic;
 			mem_addr2 : out std_logic_vector(7 downto 0);
 			IR_dir_addr_debug : out std_logic_vector(15 downto 0);
-			benchmark_enable : out std_logic;
-			benchmark_clear : out std_logic
+			benchmark : out std_logic
 		);
 	end component;
 
@@ -234,15 +232,6 @@ package MP_lib is
 			RegisterD : out std_logic_vector(15 downto 0);
 			RegisterE : out std_logic_vector(15 downto 0);
 			RegisterF : out std_logic_vector(15 downto 0)
-		);
-	end component;
-
-	component PerformanceCounter is
-		port(
-			clock 	: in std_logic;
-			enable	: in std_logic;
-			clear	: in std_logic;
-			count 	: out std_logic_vector(15 downto 0)
 		);
 	end component;
 	

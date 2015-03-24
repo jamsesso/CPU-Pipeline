@@ -44,7 +44,8 @@ port( 	cpu_clk:	in std_logic;
 		D_RegisterC : out std_logic_vector(15 downto 0);
 		D_RegisterD : out std_logic_vector(15 downto 0);
 		D_RegisterE : out std_logic_vector(15 downto 0);
-		D_RegisterF : out std_logic_vector(15 downto 0)
+		D_RegisterF : out std_logic_vector(15 downto 0);
+		D_benchmark : out std_logic
 -- end debug variables		
 );
 end microprocessor;
@@ -66,8 +67,7 @@ signal RFs_s: std_logic_vector(1 downto 0);
 signal PCld_s, Mre_s, Mwe_s, jpz_s, oe_s: std_logic;
 signal debug_IR_dir_addr : std_logic_vector(15 downto 0);
 
-signal benchmark_enable : std_logic;
-signal benchmark_clear : std_logic;
+signal benchmark : std_logic;
 
 signal counter : std_logic_vector(15 downto 0) := x"0000";
 
@@ -78,7 +78,7 @@ begin
 	Unit0: ctrl_unit port map(	cpu_clk,cpu_rst,PCld_s,mem_data_out2,rfout_bus,addr_bus,
 								immd_bus, IR_debug, RFs_s,RFwa_s,RFr1a_s,RFr2a_s,RFwe_s,
 								RFr1e_s,RFr2e_s,jpz_s,ALUs_s,Mre_s,Mwe_s,oe_s, mem_read2, mem_addr2, debug_IR_dir_addr,
-								benchmark_enable, benchmark_clear);
+								benchmark);
 								
 	Unit1: datapath port map(	cpu_clk,cpu_rst,immd_bus,mdout_bus,
 								RFs_s,RFwa_s,RFr1a_s,RFr2a_s,RFwe_s,RFr1e_s,
@@ -91,10 +91,8 @@ begin
 								
 	Unit2: memory port map(	cpu_clk,cpu_rst,Mre_s, mem_read2, Mwe_s,mem_addr, mem_addr2, mdin_bus,mdout_bus, mem_data_out2);
 	
-	--Unit3: PerformanceCounter port map(cpu_clk, benchmark_enable, benchmark_clear, performance_counter);
-	
-	process(cpu_clk) begin
-		if rising_edge(cpu_clk) then
+	process(cpu_clk, benchmark) begin
+		if rising_edge(cpu_clk) and benchmark = '1' then
 			counter <= counter + 1;
 		end if;
 	end process;
@@ -124,5 +122,6 @@ D_jpz_s<=jpz_s;
 D_oe_s<=oe_s;
 D_IR <= IR_debug;
 D_IR_dir_addr <= debug_IR_dir_addr;
+D_benchmark <= benchmark;
 
 end structure;

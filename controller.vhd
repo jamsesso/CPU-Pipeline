@@ -26,8 +26,7 @@ entity controller is
 		Mwe_ctrl:	out std_logic;
 		oe_ctrl:	out std_logic;
 		mem_read2:	out std_logic;
-		benchmark_enable : out std_logic;
-		benchmark_clear : out std_logic
+		benchmark:  out std_logic
 	);
 end controller;
 
@@ -89,6 +88,7 @@ begin
 	-- Execute stage.
 	ExecuteStage: process(clock, rst) begin
 		if rst = '1' then
+			benchmark  <= '1';
 			RFs_ctrl   <= "00";
 			RFwe_ctrl  <= '0';
 			Mre_ctrl   <= '0';
@@ -278,6 +278,7 @@ begin
 				when halt =>
 					case exec_state is
 						when First =>
+							benchmark <= '0';
 							halt_cpu := '1';
 							
 						when others => -- Doesn't matter, CPU is halted.
@@ -395,50 +396,6 @@ begin
 						when Third =>
 							RFwe_ctrl <= '1';
 							Mre_ctrl <= '0';
-							exec_state <= First;
-						
-						when others =>
-					end case;
-				
-				when bstart =>
-					case exec_state is
-						when First =>
-							RFs_ctrl   <= "00";
-							RFwe_ctrl  <= '0';
-							Mre_ctrl   <= '0';
-							Mwe_ctrl   <= '0';
-							jmpen_ctrl <= '0';
-							oe_ctrl    <= '0';
-							benchmark_clear <= '1';
-							exec_state <= Second;
-							
-						when Second =>
-							benchmark_clear <= '0';
-							exec_state <= Third;
-							
-						when Third =>
-							benchmark_enable <= '1';
-							exec_state <= First;
-						
-						when others =>
-					end case;
-					
-				when bstop =>
-					case exec_state is
-						when First =>
-							RFs_ctrl   <= "00";
-							RFwe_ctrl  <= '0';
-							Mre_ctrl   <= '0';
-							Mwe_ctrl   <= '0';
-							jmpen_ctrl <= '0';
-							oe_ctrl    <= '0';
-							benchmark_enable <= '0';
-							exec_state <= Second;
-							
-						when Second =>
-							exec_state <= Third;
-							
-						when Third =>
 							exec_state <= First;
 						
 						when others =>
