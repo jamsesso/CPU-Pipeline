@@ -16,7 +16,7 @@ end entity;
 architecture Behaviour of PerformanceCounter is
 	signal tmp_counter : std_logic_vector(15 downto 0) := x"0000";
 begin
-	BenchmarkPerformance: process(clock, clear) begin
+	BenchmarkPerformance: process(clock, clear, enable) begin
 		if clear = '1' then
 			tmp_counter <= x"0000";
 		elsif rising_edge(clock) and enable = '1' then

@@ -4609,9 +4609,9 @@ TRANSITION_LIST("cpu_clk")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 2300;
-			LEVEL 0 FOR 5.0;
-			LEVEL 1 FOR 5.0;
+			REPEAT = 4600;
+			LEVEL 0 FOR 2.5;
+			LEVEL 1 FOR 2.5;
 		}
 	}
 }

@@ -403,7 +403,12 @@ begin
 				when bstart =>
 					case exec_state is
 						when First =>
-							RFwe_ctrl <= '0';
+							RFs_ctrl   <= "00";
+							RFwe_ctrl  <= '0';
+							Mre_ctrl   <= '0';
+							Mwe_ctrl   <= '0';
+							jmpen_ctrl <= '0';
+							oe_ctrl    <= '0';
 							benchmark_clear <= '1';
 							exec_state <= Second;
 							
@@ -421,16 +426,19 @@ begin
 				when bstop =>
 					case exec_state is
 						when First =>
-							RFwe_ctrl <= '0';
+							RFs_ctrl   <= "00";
+							RFwe_ctrl  <= '0';
+							Mre_ctrl   <= '0';
+							Mwe_ctrl   <= '0';
+							jmpen_ctrl <= '0';
+							oe_ctrl    <= '0';
 							benchmark_enable <= '0';
 							exec_state <= Second;
 							
 						when Second =>
-							benchmark_clear <= '1';
 							exec_state <= Third;
 							
 						when Third =>
-							benchmark_clear <= '0';
 							exec_state <= First;
 						
 						when others =>

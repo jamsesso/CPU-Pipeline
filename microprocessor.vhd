@@ -69,6 +69,8 @@ signal debug_IR_dir_addr : std_logic_vector(15 downto 0);
 signal benchmark_enable : std_logic;
 signal benchmark_clear : std_logic;
 
+signal counter : std_logic_vector(15 downto 0) := x"0000";
+
 begin
 	
 	mem_addr <= addr_bus(7 downto 0); 
@@ -89,7 +91,15 @@ begin
 								
 	Unit2: memory port map(	cpu_clk,cpu_rst,Mre_s, mem_read2, Mwe_s,mem_addr, mem_addr2, mdin_bus,mdout_bus, mem_data_out2);
 	
-	Unit3: PerformanceCounter port map(cpu_clk, benchmark_enable, benchmark_clear, performance_counter);
+	--Unit3: PerformanceCounter port map(cpu_clk, benchmark_enable, benchmark_clear, performance_counter);
+	
+	process(cpu_clk) begin
+		if rising_edge(cpu_clk) then
+			counter <= counter + 1;
+		end if;
+	end process;
+
+performance_counter <= counter;
 
 -- Debug code
 D_addr_bus <=addr_bus;
