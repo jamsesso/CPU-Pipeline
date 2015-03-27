@@ -39,3 +39,4 @@ incremental_db/
 *.fit.smsg
 db/TB_mp.ace_cmp.ecobp
 signalprobe_qsf.tcl
+db/TB_mp.sim_ori.vwf
